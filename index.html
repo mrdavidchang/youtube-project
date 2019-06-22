@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Roboto|Nunito|Shadows+Into+Light|Neucha|Rock+Salt|PT+Sans|Indie+Flower');
+    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Lazy Browser</title>
+    <link rel="shortcut icon" type="image/png" href="img/new/logo.png">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <section id="nav-section">
+        <div class="nav-container">
+            <div id="title">
+                <img id="logo" src="/img/new/logo.png" onclick="toggleDiv('home-page');" alt="">
+                <a id="name" onclick="toggleDiv('home-page');">LAZY BROWSER</a>
+            </div>
+
+            <div class="search-container">
+                <form id="search-form" >
+                    <input type="text" placeholder="Search Youtube Channel" id="input" />
+                    <input type="image" src="/img/search.png" id="search-icon" />
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- Body of Entire Webiste -->
+    <section id="body-section">
+        <div class="body-container">
+            <div id="home-page">
+                <div id="set1">
+                    <div class="title-style">
+                        welcome
+                    </div>
+                    <div id="showcase1" class="showcase-style">
+                        <img src="/img/showcase00copy.png">
+                    </div>
+                </div>
+                <div id="set2">
+                    <div id="showcase2" class="showcase-style">
+                        <img src="/img/showcase44.png">
+                    </div>
+                    <div class="title-style">
+                        a simple Youtube
+                        <br>
+                        channel layout
+                    </div>
+                </div>
+                <div id="set3">
+                    <div class="title-style">
+                        
+                    </div>
+                    <div id="showcase3" class="showcase-style">
+                        <img src="/img/showcase22copy.png">
+                    </div>
+                </div>
+
+                <a id="info-button" onclick="toggleDiv('info-page');">more info</a>
+            </div>
+            <div id="info-page"></div>
+            <div id="search-page"></div>
+            <div id="channel-page">
+                <!-- Info Section -->
+                <div class="infoSection">
+                        <div class="info-container">
+                            <!-- (Left Column + Row 1) = Youtuber Profile Picture + Name-->
+                            <div id="pictureName" target="_blank"></div>
+                
+                            <!-- (Right Column + Row 1) = Statistics  -->
+                            <div id="statistics"></div>
+                        </div>
+                </div>
+
+                <!-- Rotate Image -->
+                <div class="rotate-container">
+                    <div id="rotate"></div>
+                </div>
+                
+                <!-- Filter + Video Section -->
+                <section id="middleSection">
+                    <div class="filter-container">
+                        <input type="image" src="/img/leftArrow.png" id="leftButton"/>
+                        <input type="image" src="/img/RightArrow.png" id="rightButton"/>
+                        <div id="hide-search">
+                            <div id="pagination"></div>
+                            <p>(click points for video)</p>
+                        </div>
+                    </div>
+
+                    <div class="video-wrap">
+                        <div class="video-container">
+                                <iframe id="video-frame" height="360" width="640" 
+                                frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Chart Section -->
+                <section id="chartSection">
+                    <div class="chart-container">
+                        <canvas id="myChart" height="90"></canvas>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <hr>
+    </section>
+
+    <!-- Footer -->
+    <div class="footer">
+            <p>Copyright &copy; 2019</p>
+    </div>
+
+    <!-- Additional Sources -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+
+    <script src="https://apis.google.com/js/client.js?onload=init"></script>
+    <script src="js/classes.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
