@@ -495,7 +495,10 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
               borderColor: "#0ABDE3",
               fill: false,
               pointRadius: 7,
-              pointHoverRadius: 7
+              pointHoverRadius: 7,
+              pointBackgroundColor: ["#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
+              "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
+              "#dae4e5", "#dae4e5", "#dae4e5"]
             },
             { 
               data: likeString,
@@ -504,47 +507,46 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
               fill: false,
               pointRadius: 5,
               pointHoverRadius: 5,
+              pointBackgroundColor: ["#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
+              "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
+              "#dae4e5", "#dae4e5", "#dae4e5"]
             },
             {
                 data: dislikeString,
                 label: "Dislikes",
-                borderColor: "#ff0000",
+                borderColor: "#FFA500",
                 fill: false,
                 pointRadius: 5,
-                pointHoverRadius: 5
+                pointHoverRadius: 5,
+                pointBackgroundColor: ["#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
+                "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
+                "#dae4e5", "#dae4e5", "#dae4e5"]
             }
           ]
         },
         options: {
+            onClick: function(evt, activeElements) {
+                if(activeElements[0] != undefined)
+                {
+                    var elementIndex = activeElements[0]._index;
+                    this.data.datasets[0].pointBackgroundColor[elementIndex] = "#FF3333";
+                    this.data.datasets[1].pointBackgroundColor[elementIndex] = "#FF3333";
+                    this.data.datasets[2].pointBackgroundColor[elementIndex] = "#FF3333";
+                    this.update();
+                }
+            }, 
            tooltips: {
             callbacks: {
                 label: function(item, data) {
-                    //data.datasets[0].pointBackgroundColor[elementIndex] = 'white';
-                    
-
-                    //"value" is view/like count of point clicked
-                    //"math" gets the index of the point clicked relative to total array size
                     let value = data.datasets[item.datasetIndex].data[item.index];
-
-                    console.warn("totalSize: " + globalObject.totalSize);
-                    console.warn("currentPage: " + globalObject.currentPage);
-                    console.warn("item.index: " + item.index);
-                    
-                    //let math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
-
-                    //console.warn("math: " + math);
-
                     let math;
                     if(globalObject.currentPage == globalObject.totalPages)
                     {
-                        console.error("INSIDE");
                         math = item.index;
-                        //myChart.getDatasetMeta(0).data[math].custom = {backgroundColor: 'red'};
                     }
                     else
                     {
                         math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
-                        //myChart.getDatasetMeta(0).data[math].custom = {backgroundColor: 'red'};
                     }
         
                     //Assign values to globalObject
