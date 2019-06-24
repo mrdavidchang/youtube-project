@@ -6,6 +6,11 @@ const maxVideos = 15;
 const chartArea = document.getElementById("myChart").getContext("2d");
 chartTrigger = 0;
 
+colorChanging = ["#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
+"#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
+"#dae4e5", "#dae4e5", "#dae4e5"];
+
+
 /*
 Tag: PREP
 Description: Asynchronously loads the gapi libraries requested
@@ -496,9 +501,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
               fill: false,
               pointRadius: 7,
               pointHoverRadius: 7,
-              pointBackgroundColor: ["#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
-              "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
-              "#dae4e5", "#dae4e5", "#dae4e5"]
+              pointBackgroundColor: colorChanging,
             },
             { 
               data: likeString,
@@ -507,9 +510,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
               fill: false,
               pointRadius: 5,
               pointHoverRadius: 5,
-              pointBackgroundColor: ["#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
-              "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
-              "#dae4e5", "#dae4e5", "#dae4e5"]
+              pointBackgroundColor: colorChanging,
             },
             {
                 data: dislikeString,
@@ -518,9 +519,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
                 fill: false,
                 pointRadius: 5,
                 pointHoverRadius: 5,
-                pointBackgroundColor: ["#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
-                "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
-                "#dae4e5", "#dae4e5", "#dae4e5"]
+                pointBackgroundColor: colorChanging,
             }
           ]
         },
