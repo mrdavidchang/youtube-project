@@ -191,4 +191,5 @@ class Playlist {
     linkLL = new LinkedList();
     viewLL = new LinkedList();
     likeLL = new LinkedList();
+    dislikeLL = new LinkedList();
 }

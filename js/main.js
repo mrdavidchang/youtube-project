@@ -277,8 +277,8 @@ function goToChannel(channelObject)
     {
         globalObject.remainder = remainder;
     }
-    console.log("total videos: " + channelObject.getVideos());
-    console.log("remainder: " + globalObject.remainder);
+    //console.log("total videos: " + channelObject.getVideos());
+    //console.log("remainder: " + globalObject.remainder);
     requestPlaylist();
 }
 
@@ -391,7 +391,7 @@ function requestPlaylist() {
             {
                 globalObject.size = itemArray.length;
             }
-            console.log("size: " + itemArray.length);
+            //console.log("size: " + itemArray.length);
             globalObject.totalSize += itemArray.length;
             globalObject.position += itemArray.length;
 
@@ -447,18 +447,21 @@ function requestVideos(idArray)
             for(let index = 0; index < videoDetailObjects.length; ++index) {
                 const views = `${videoDetailObjects[index].statistics.viewCount}`;
                 const likes = `${videoDetailObjects[index].statistics.likeCount}`;
+                const dislikes = `${videoDetailObjects[index].statistics.dislikeCount}`;
 
                 (globalObject.viewLL).add(views);
                 (globalObject.likeLL).add(likes);
+                (globalObject.dislikeLL).add(dislikes);
             }
 
             //Prepare the arrays as string for final parsing
             globalObject.position -= globalObject.size;
             let viewString = globalObject.viewLL.grabString(globalObject.position, globalObject.size);
             let likeString = globalObject.likeLL.grabString(globalObject.position, globalObject.size);
+            let dislikeString = globalObject.dislikeLL.grabString(globalObject.position, globalObject.size);
             let dateString = globalObject.dateLL.grabString(globalObject.position, globalObject.size);
 
-            drawGraph(viewString, likeString, dateString);
+            drawGraph(viewString, likeString, dislikeString, dateString);
         }
     })
     //Turn on left button
@@ -471,7 +474,7 @@ Description:
 Parameters: 
 Return: 
 */
-function drawGraph(viewString, likeString, dateString) {
+function drawGraph(viewString, likeString, dislikeString, dateString) {
     if(chartTrigger == 0)
     {
         chartTrigger = 1;
@@ -493,7 +496,7 @@ function drawGraph(viewString, likeString, dateString) {
               fill: false,
               pointRadius: 7,
               pointHoverRadius: 7
-          },
+            },
             { 
               data: likeString,
               label: "Likes",
@@ -501,6 +504,14 @@ function drawGraph(viewString, likeString, dateString) {
               fill: false,
               pointRadius: 5,
               pointHoverRadius: 5,
+            },
+            {
+                data: dislikeString,
+                label: "Dislikes",
+                borderColor: "#ff0000",
+                fill: false,
+                pointRadius: 5,
+                pointHoverRadius: 5
             }
           ]
         },
@@ -508,10 +519,33 @@ function drawGraph(viewString, likeString, dateString) {
            tooltips: {
             callbacks: {
                 label: function(item, data) {
+                    //data.datasets[0].pointBackgroundColor[elementIndex] = 'white';
+                    
+
                     //"value" is view/like count of point clicked
                     //"math" gets the index of the point clicked relative to total array size
                     let value = data.datasets[item.datasetIndex].data[item.index];
-                    let math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
+
+                    console.warn("totalSize: " + globalObject.totalSize);
+                    console.warn("currentPage: " + globalObject.currentPage);
+                    console.warn("item.index: " + item.index);
+                    
+                    //let math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
+
+                    //console.warn("math: " + math);
+
+                    let math;
+                    if(globalObject.currentPage == globalObject.totalPages)
+                    {
+                        console.error("INSIDE");
+                        math = item.index;
+                        //myChart.getDatasetMeta(0).data[math].custom = {backgroundColor: 'red'};
+                    }
+                    else
+                    {
+                        math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
+                        //myChart.getDatasetMeta(0).data[math].custom = {backgroundColor: 'red'};
+                    }
         
                     //Assign values to globalObject
                     globalObject.index = math;
@@ -536,8 +570,10 @@ function drawGraph(viewString, likeString, dateString) {
                         callback: function(label) {
                             if(label/1000000 >= 1)
                                 return label/1000000 + ' million';
-                            else 
+                            else if(label/1000 >= 1)
                                 return label/1000 + 'k';
+                            else
+                                return label;
                         }
                     },
                 }],
@@ -598,8 +634,6 @@ Return: void
 */
 document.getElementById("leftButton").onclick = function(event) {
     //If position = 0 then grab more videos
-    console.log("globalObject.position: " + globalObject.position);
-    console.log("globalObject.totalSize: " + globalObject.totalSize);
     if( globalObject.position < maxVideos && globalObject.totalSize != globalObject.videos)
     {
         requestPlaylist();
@@ -612,6 +646,7 @@ document.getElementById("leftButton").onclick = function(event) {
             globalObject.position -= globalObject.remainder;
             drawGraph(globalObject.viewLL.grabString(globalObject.position, globalObject.remainder),
             globalObject.likeLL.grabString(globalObject.position, globalObject.remainder),
+            globalObject.dislikeLL.grabString(globalObject.position, globalObject.remainder),
             globalObject.dateLL.grabString(globalObject.position, globalObject.remainder));
         }
         //"else" just use "maxVideos" value
@@ -620,6 +655,7 @@ document.getElementById("leftButton").onclick = function(event) {
             globalObject.position -= maxVideos;
             drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
             globalObject.likeLL.grabString(globalObject.position, maxVideos),
+            globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
             globalObject.dateLL.grabString(globalObject.position, maxVideos));
         }
     }
@@ -641,18 +677,18 @@ document.getElementById("rightButton").onclick = function(event) {
     if(globalObject.currentPage == globalObject.totalPages)
     {
         globalObject.position += globalObject.remainder;
-        drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
-        globalObject.likeLL.grabString(globalObject.position, maxVideos),
-        globalObject.dateLL.grabString(globalObject.position, maxVideos));
     }
     //"else" just use "maxVideos"
     else
     {
         globalObject.position += maxVideos;
-        drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
-        globalObject.likeLL.grabString(globalObject.position, maxVideos),
-        globalObject.dateLL.grabString(globalObject.position, maxVideos));
     }
+
+    //Draw
+    drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
+    globalObject.likeLL.grabString(globalObject.position, maxVideos),
+    globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
+    globalObject.dateLL.grabString(globalObject.position, maxVideos));
 
     globalObject.currentPage--;
     checkButtons();
