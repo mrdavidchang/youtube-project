@@ -2,6 +2,8 @@
 const videoQuota = 50;
 const searchQuota = 20;
 const maxVideos = 15;
+const greyColor = "#DAE4E5";
+const redColor = "#EC7063";
 
 const chartArea = document.getElementById("myChart").getContext("2d");
 chartTrigger = 0;
@@ -413,7 +415,7 @@ function requestPlaylist() {
                 globalObject.dateLL.add(formatDate(date));
                 globalObject.titleLL.add(title);
                 globalObject.linkLL.add(link);
-                globalObject.colorLL.add("#dae4e5");
+                globalObject.colorLL.add(greyColor);
 
                 idArray.push(link);
             });
@@ -522,20 +524,36 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
         },
         options: {
             onClick: function(evt, activeElements) {
+                //Check that a point is actually clicked
                 if(activeElements[0] != undefined)
                 {
                     var elementIndex = activeElements[0]._index;
-                    this.data.datasets[0].pointBackgroundColor[elementIndex] = "#FF3333";
-                    this.data.datasets[1].pointBackgroundColor[elementIndex] = "#FF3333";
-                    this.data.datasets[2].pointBackgroundColor[elementIndex] = "#FF3333";
+                    let holdColor = this.data.datasets[0].pointBackgroundColor[elementIndex];
+                    if(holdColor == greyColor)
+                    {
+                        this.data.datasets[0].pointBackgroundColor[elementIndex] = redColor;
+                        this.data.datasets[1].pointBackgroundColor[elementIndex] = redColor;
+                        this.data.datasets[2].pointBackgroundColor[elementIndex] = redColor;
+                        globalObject.colorLL.set(globalObject.index, redColor);
+                    }
+                    else
+                    {
+                        this.data.datasets[0].pointBackgroundColor[elementIndex] = greyColor;
+                        this.data.datasets[1].pointBackgroundColor[elementIndex] = greyColor;
+                        this.data.datasets[2].pointBackgroundColor[elementIndex] = greyColor;
+                        globalObject.colorLL.set(globalObject.index, greyColor);
+                    }
                     this.update();
                 }
             }, 
            tooltips: {
             callbacks: {
+                //Btw "label" FIRST then "onClick"
+                //So assign "globalObject.index" in "label" to use the value in "onClick"
                 label: function(item, data) {
                     let value = data.datasets[item.datasetIndex].data[item.index];
                     let math;
+
                     if(globalObject.currentPage == globalObject.totalPages)
                     {
                         math = item.index;
@@ -545,15 +563,11 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                         math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
                     }
         
-                    //Assign values to globalObject
                     globalObject.index = math;
-                    globalObject.colorLL.set(math, "#EC7063");
                     globalObject.url = "https://www.youtube.com/embed/" + globalObject.linkLL.get(math);
-
                     let message = [];
                     message.push(globalObject.titleLL.get(math));
                     message.push(addCommas(value));
-                    
                     return message;
                 },
                 mode: 'index',
