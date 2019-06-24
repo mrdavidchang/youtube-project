@@ -35,9 +35,8 @@ class LinkedList {
         {
             return node.element;
         }
-        else{
-            //let hold = new Node(element);
-
+        else 
+        {
             //Loops thru
             while(counter < index)
             {
@@ -45,6 +44,31 @@ class LinkedList {
                 counter++;
             }
             return node.element;
+        }
+    }
+
+    set(index, value)
+    {
+        let node = this.head;
+        let counter = 0;
+
+        if(node == null)
+        {
+            return null;
+        }
+        else if(index == 0)
+        {
+            node.element = value;
+        }
+        else
+        {
+            //Loops thru
+            while(counter < index)
+            {
+                node = node.next;
+                counter++;
+            }
+            node.element = value;
         }
     }
 
@@ -192,4 +216,5 @@ class Playlist {
     viewLL = new LinkedList();
     likeLL = new LinkedList();
     dislikeLL = new LinkedList();
+    colorLL = new LinkedList();
 }

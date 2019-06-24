@@ -6,11 +6,6 @@ const maxVideos = 15;
 const chartArea = document.getElementById("myChart").getContext("2d");
 chartTrigger = 0;
 
-colorChanging = ["#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
-"#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", "#dae4e5", 
-"#dae4e5", "#dae4e5", "#dae4e5"];
-
-
 /*
 Tag: PREP
 Description: Asynchronously loads the gapi libraries requested
@@ -418,6 +413,7 @@ function requestPlaylist() {
                 globalObject.dateLL.add(formatDate(date));
                 globalObject.titleLL.add(title);
                 globalObject.linkLL.add(link);
+                globalObject.colorLL.add("#dae4e5");
 
                 idArray.push(link);
             });
@@ -465,8 +461,9 @@ function requestVideos(idArray)
             let likeString = globalObject.likeLL.grabString(globalObject.position, globalObject.size);
             let dislikeString = globalObject.dislikeLL.grabString(globalObject.position, globalObject.size);
             let dateString = globalObject.dateLL.grabString(globalObject.position, globalObject.size);
+            let colorString = globalObject.colorLL.grabString(globalObject.position, globalObject.size);
 
-            drawGraph(viewString, likeString, dislikeString, dateString);
+            drawGraph(viewString, likeString, dislikeString, dateString, colorString);
         }
     })
     //Turn on left button
@@ -479,7 +476,7 @@ Description:
 Parameters: 
 Return: 
 */
-function drawGraph(viewString, likeString, dislikeString, dateString) {
+function drawGraph(viewString, likeString, dislikeString, dateString, colorString) {
     if(chartTrigger == 0)
     {
         chartTrigger = 1;
@@ -501,7 +498,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
               fill: false,
               pointRadius: 7,
               pointHoverRadius: 7,
-              pointBackgroundColor: colorChanging,
+              pointBackgroundColor: colorString,
             },
             { 
               data: likeString,
@@ -510,7 +507,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
               fill: false,
               pointRadius: 5,
               pointHoverRadius: 5,
-              pointBackgroundColor: colorChanging,
+              pointBackgroundColor: colorString,
             },
             {
                 data: dislikeString,
@@ -519,7 +516,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
                 fill: false,
                 pointRadius: 5,
                 pointHoverRadius: 5,
-                pointBackgroundColor: colorChanging,
+                pointBackgroundColor: colorString,
             }
           ]
         },
@@ -550,6 +547,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString) {
         
                     //Assign values to globalObject
                     globalObject.index = math;
+                    globalObject.colorLL.set(math, "#EC7063");
                     globalObject.url = "https://www.youtube.com/embed/" + globalObject.linkLL.get(math);
 
                     let message = [];
@@ -648,7 +646,8 @@ document.getElementById("leftButton").onclick = function(event) {
             drawGraph(globalObject.viewLL.grabString(globalObject.position, globalObject.remainder),
             globalObject.likeLL.grabString(globalObject.position, globalObject.remainder),
             globalObject.dislikeLL.grabString(globalObject.position, globalObject.remainder),
-            globalObject.dateLL.grabString(globalObject.position, globalObject.remainder));
+            globalObject.dateLL.grabString(globalObject.position, globalObject.remainder),
+            globalObject.colorLL.grabString(globalObject.position, globalObject.remainder));
         }
         //"else" just use "maxVideos" value
         else
@@ -657,7 +656,8 @@ document.getElementById("leftButton").onclick = function(event) {
             drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
             globalObject.likeLL.grabString(globalObject.position, maxVideos),
             globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
-            globalObject.dateLL.grabString(globalObject.position, maxVideos));
+            globalObject.dateLL.grabString(globalObject.position, maxVideos), 
+            globalObject.colorLL.grabString(globalObject.position, maxVideos));
         }
     }
 
@@ -689,7 +689,8 @@ document.getElementById("rightButton").onclick = function(event) {
     drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
     globalObject.likeLL.grabString(globalObject.position, maxVideos),
     globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
-    globalObject.dateLL.grabString(globalObject.position, maxVideos));
+    globalObject.dateLL.grabString(globalObject.position, maxVideos),
+    globalObject.colorLL.grabString(globalObject.position, maxVideos));
 
     globalObject.currentPage--;
     checkButtons();
