@@ -3,7 +3,7 @@ const videoQuota = 50;
 const searchQuota = 20;
 const maxVideos = 15;
 const greyColor = "#DAE4E5";
-const redColor = "#EC7063";
+const redColor = "#FF0000";
 
 const chartArea = document.getElementById("myChart").getContext("2d");
 chartTrigger = 0;
@@ -56,11 +56,9 @@ document.getElementById("search-form").addEventListener('submit', e => {
     }
 
     //"if" input is valid start searching
-    if(input.value)
-        searchYoutube(input.value);
+    if(input.value) searchYoutube(input.value);
     //"else" if input is empty go to home page
-    else
-        toggleDiv("home-page");
+    else toggleDiv("home-page");
 });
 
 /*
@@ -91,6 +89,7 @@ function searchYoutube(paramSearch)
         q: input.value,
         maxResults: searchQuota
     })
+    
     request.execute(response => {
         let playlistItems = response.result.items;
         if(playlistItems) {
@@ -109,7 +108,7 @@ function searchYoutube(paramSearch)
         }
         requestChannels(idArray, channelArray);
     })
-    .catch(err => alert('Website Reached Youtube API Quota Limit!'));
+    //.catch(err => alert('Website Reached Youtube API Quota Limit!'));
 }
 
 /*
@@ -279,9 +278,7 @@ function goToChannel(channelObject)
     {
         globalObject.remainder = remainder;
     }
-    //console.log("total videos: " + channelObject.getVideos());
-    //console.log("remainder: " + globalObject.remainder);
-    requestPlaylist();
+    requestPlaylist(requestVideos);
 }
 
 /*
@@ -341,10 +338,7 @@ Description: Request playlist of videos using a playlist id
 Parameters: void
 Return: void
 */
-function requestPlaylist() {
-    //Turn off left button
-    document.getElementById("leftButton").style.pointerEvents = "none";
-
+function requestPlaylist(callback) {
     //If there is a valid token value use updated "requestOptions"
     const token = globalObject.token;
     let requestOptions;
@@ -393,7 +387,6 @@ function requestPlaylist() {
             {
                 globalObject.size = itemArray.length;
             }
-            //console.log("size: " + itemArray.length);
             globalObject.totalSize += itemArray.length;
             globalObject.position += itemArray.length;
 
@@ -421,7 +414,7 @@ function requestPlaylist() {
             });
 
             //Looks up the contentDetails for videos listed in "idArray"
-            requestVideos(idArray);
+            callback(idArray, drawGraph);
         }
         else{
             videoContainer.innerHTML = "No Uploaded Videos :(";
@@ -435,7 +428,7 @@ Description: Store video details in global object and draw graph
 Parameters: "idArray" - array of video ids
 Return: void
 */
-function requestVideos(idArray)
+function requestVideos(idArray, callback)
 {
     //Fill out request and execute 
     var dataRequestVar = gapi.client.youtube.videos.list({
@@ -465,11 +458,12 @@ function requestVideos(idArray)
             let dateString = globalObject.dateLL.grabString(globalObject.position, globalObject.size);
             let colorString = globalObject.colorLL.grabString(globalObject.position, globalObject.size);
 
-            drawGraph(viewString, likeString, dislikeString, dateString, colorString);
+            callback(viewString, likeString, dislikeString, dateString, colorString);
         }
     })
-    //Turn on left button
+    //Turn on buttons
     document.getElementById("leftButton").style.pointerEvents = "auto";
+    document.getElementById("rightButton").style.pointerEvents = "auto";
 }
 
 /*
@@ -499,7 +493,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
               borderColor: "#0ABDE3",
               fill: false,
               pointRadius: 7,
-              pointHoverRadius: 7,
+              pointHoverRadius: 8,
               pointBackgroundColor: colorString,
             },
             { 
@@ -508,7 +502,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
               borderColor: "#3de117",
               fill: false,
               pointRadius: 5,
-              pointHoverRadius: 5,
+              pointHoverRadius: 6,
               pointBackgroundColor: colorString,
             },
             {
@@ -517,7 +511,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                 borderColor: "#FFA500",
                 fill: false,
                 pointRadius: 5,
-                pointHoverRadius: 5,
+                pointHoverRadius: 6,
                 pointBackgroundColor: colorString,
             }
           ]
@@ -646,16 +640,28 @@ Parameters: void
 Return: void
 */
 document.getElementById("leftButton").onclick = function(event) {
+    console.log("position: " + globalObject.position);
+    console.log("totalSize: " + globalObject.totalSize);
+
+    globalObject.token;
+
+
     //If position = 0 then grab more videos
+    //if(globalObject.currentPage + 1 == globalObject.totalPages || )
     if( globalObject.position < maxVideos && globalObject.totalSize != globalObject.videos)
     {
-        requestPlaylist();
+        console.warn("LB #1");
+        //Turn off buttons
+        document.getElementById("leftButton").style.pointerEvents = "none";
+        document.getElementById("rightButton").style.pointerEvents = "none";
+        requestPlaylist(requestVideos);
     }
     else
     {
         //"if" going to last page use remainder value
         if(globalObject.currentPage + 1 == globalObject.totalPages)
         {
+            console.warn("LB #2");
             globalObject.position -= globalObject.remainder;
             drawGraph(globalObject.viewLL.grabString(globalObject.position, globalObject.remainder),
             globalObject.likeLL.grabString(globalObject.position, globalObject.remainder),
@@ -666,6 +672,7 @@ document.getElementById("leftButton").onclick = function(event) {
         //"else" just use "maxVideos" value
         else
         {
+            console.warn("LB #3");
             globalObject.position -= maxVideos;
             drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
             globalObject.likeLL.grabString(globalObject.position, maxVideos),
@@ -691,11 +698,13 @@ document.getElementById("rightButton").onclick = function(event) {
     //"if" at last page use remainder value
     if(globalObject.currentPage == globalObject.totalPages)
     {
+        console.warn("RB #1");
         globalObject.position += globalObject.remainder;
     }
     //"else" just use "maxVideos"
     else
     {
+        console.warn("RB #2");
         globalObject.position += maxVideos;
     }
 
