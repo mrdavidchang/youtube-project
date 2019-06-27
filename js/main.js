@@ -618,6 +618,8 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                     {
                         math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
                     }
+
+                    console.error("position: " + globalObject.position + " ||||||||||| math: " + math);
         
                     globalObject.index = math;
                     globalObject.url = "https://www.youtube.com/embed/" + globalObject.linkLL.get(math);
@@ -701,7 +703,12 @@ Description: "cycleLeft" / "leftCycle"
 Parameters: void
 Return: void
 */
-document.getElementById("leftButton").onclick = function(event) {
+function cycleLeft(callback) {
+
+    console.log("total size: " + globalObject.totalSize);
+    console.log("position: " + globalObject.position);
+    console.log("");
+//document.getElementById("leftButton").onclick = function(event) {
     //If position = 0 then grab more videos
     //if(globalObject.currentPage + 1 == globalObject.totalPages || )
     if( globalObject.position < maxVideos && globalObject.totalSize != globalObject.videos)
@@ -709,7 +716,8 @@ document.getElementById("leftButton").onclick = function(event) {
         //Turn off buttons
         document.getElementById("leftButton").style.pointerEvents = "none";
         document.getElementById("rightButton").style.pointerEvents = "none";
-        requestPlaylist(requestVideos);
+        //requestPlaylist(requestVideos);
+        callback(requestVideos);
     }
     else
     {
@@ -726,12 +734,17 @@ document.getElementById("leftButton").onclick = function(event) {
         //"else" just use "maxVideos" value
         else
         {
-            globalObject.position -= maxVideos;
-            drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
-            globalObject.likeLL.grabString(globalObject.position, maxVideos),
-            globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
-            globalObject.dateLL.grabString(globalObject.position, maxVideos), 
-            globalObject.colorLL.grabString(globalObject.position, maxVideos));
+            try {   
+                globalObject.position -= maxVideos;
+                drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
+                globalObject.likeLL.grabString(globalObject.position, maxVideos),
+                globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
+                globalObject.dateLL.grabString(globalObject.position, maxVideos), 
+                globalObject.colorLL.grabString(globalObject.position, maxVideos));
+            }
+            catch(e) {
+                console.error("undefined");
+            }
         }
     }
 
@@ -748,6 +761,10 @@ Parameters:
 Return: 
 */
 document.getElementById("rightButton").onclick = function(event) {
+    console.log("total size: " + globalObject.totalSize);
+    console.log("position: " + globalObject.position);
+    console.log("");
+
     //"if" at last page use remainder value
     if(globalObject.currentPage == globalObject.totalPages)
     {

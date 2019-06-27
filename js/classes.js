@@ -200,7 +200,6 @@ class Playlist {
     currentPage = 1;
     totalPages = 0; //total pages of graphs
 
-
     size = 0;
     totalSize = 0;
     position = 0;
