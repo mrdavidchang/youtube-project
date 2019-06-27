@@ -91,22 +91,27 @@ function searchYoutube(paramSearch)
     })
     
     request.execute(response => {
-        let playlistItems = response.result.items;
-        if(playlistItems) {
-            playlistItems.forEach(item => {
-                const id = `${item.snippet.channelId}`;
-                const name = `${item.snippet.title}`;
-                const picture = `${item.snippet.thumbnails.high.url}`;
-                
-                //Create "Channel" object and store inside "channelArray"
-                let channel = new Channel(id, name, picture);
-                channelArray.push(channel);
+        if(response.result == undefined)
+            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+        else
+        {
+            let playlistItems = response.result.items;
+            if(playlistItems) {
+                playlistItems.forEach(item => {
+                    const id = `${item.snippet.channelId}`;
+                    const name = `${item.snippet.title}`;
+                    const picture = `${item.snippet.thumbnails.high.url}`;
+                    
+                    //Create "Channel" object and store inside "channelArray"
+                    let channel = new Channel(id, name, picture);
+                    channelArray.push(channel);
 
-                //Store "id" in a separate array because the format is different
-                idArray.push(id);
-            })
+                    //Store "id" in a separate array because the format is different
+                    idArray.push(id);
+                })
+            }
+            requestChannels(idArray, channelArray);
         }
-        requestChannels(idArray, channelArray);
     })
     //.catch(err => alert('Website Reached Youtube API Quota Limit!'));
 }
@@ -128,6 +133,8 @@ function requestChannels(idArray, channelArray)
             id: idArray.join(","),
         });
         request.execute(response => {
+            if(response.result == undefined) alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+
             let playlistItems = response.result.items;
 
             //Loop and set information for each channel object
@@ -230,6 +237,18 @@ Return:
 function goToChannel(channelObject)
 {
     toggleDiv("channel-page");
+    let theMiddle = document.getElementById("middleSection");
+    let theChart = document.getElementById("chartSection");
+    if(channelObject.getVideos() == 0)
+    {
+       theMiddle.style.visibility = 'hidden';
+       theChart.style.visibility = 'hidden';
+    }
+    else
+    {
+        theMiddle.style.visibility = 'visible';
+        theChart.style.visibility = 'visible';
+    }
 
     //Calculate how many "pages" we need
     //(Total # of videos) / (# videos per graph)
@@ -248,7 +267,7 @@ function goToChannel(channelObject)
             <br>
             <b>${channelObject.getViews()}</b> Total Views
 
-            <div id='hide-content'>
+            <div id='hide-level-two'>
                 <hr>
                 Description:<br/>${channelObject.getDescription()}
             </div>
@@ -366,6 +385,9 @@ function requestPlaylist(callback) {
 
     //Execute the API request
     request.execute(response => {
+        if(response.result == undefined)
+            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+
         //Store the nextPageToken
         globalObject.token = response.result.nextPageToken;
         const itemArray = response.result.items;
@@ -378,7 +400,7 @@ function requestPlaylist(callback) {
             //"itemArray.length" = videoQuota
             //EXCEPT when there isn't enough videos to grab
             //So either the channel has < videoQuota to start with
-            //Or it's grabbing the remainding videos
+            //Or it's grabbing the remainding videos            
             if(itemArray.length > maxVideos)
             {
                 globalObject.size = maxVideos;
@@ -437,6 +459,9 @@ function requestVideos(idArray, callback)
     });                                                                                                                        
 
     dataRequestVar.execute(response => {
+        if(response.result == undefined)
+            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+
         const videoDetailObjects = response.result.items;
         if(videoDetailObjects) {
             //Loop through videoDetailObjects and create VideoDetails objects
@@ -450,6 +475,19 @@ function requestVideos(idArray, callback)
                 (globalObject.dislikeLL).add(dislikes);
             }
 
+            //Prepare the arrays as string for final parsing
+            /*
+            if(globalObject.size <= globalObject.position <= maxVideos)
+            {
+                globalObject.size = globalObject.position;
+            }
+            */
+           //if at the last page update size to use remainder
+           if(globalObject.currentPage == globalObject.totalPages)
+            {
+                globalObject.size = globalObject.remainder;
+            }
+            
             //Prepare the arrays as string for final parsing
             globalObject.position -= globalObject.size;
             let viewString = globalObject.viewLL.grabString(globalObject.position, globalObject.size);
@@ -495,6 +533,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
               pointRadius: 7,
               pointHoverRadius: 8,
               pointBackgroundColor: colorString,
+              hidden: globalObject.legend[0],
             },
             { 
               data: likeString,
@@ -504,6 +543,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
               pointRadius: 5,
               pointHoverRadius: 6,
               pointBackgroundColor: colorString,
+              hidden: globalObject.legend[1],
             },
             {
                 data: dislikeString,
@@ -513,10 +553,32 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                 pointRadius: 5,
                 pointHoverRadius: 6,
                 pointBackgroundColor: colorString,
+                hidden: globalObject.legend[2],
             }
           ]
         },
         options: {
+            legend: {
+                onClick: function(evt, legendItem) {
+                    //Store the original legend onClick function because it somehow 
+                    //redraws the graph immediately while "myChart.update()" doesn't work
+                    let originalAction = Chart.defaults.global.legend.onClick;
+                    let holdIndex;
+                    let holdBool;
+
+                    //Assign index and bool values
+                    if(legendItem.text == "Views") holdIndex = 0;
+                    else if(legendItem.text == "Likes") holdIndex = 1;
+                    else if(legendItem.text == "Dislikes") holdIndex = 2;
+                    holdBool = !(legendItem.hidden);
+
+                    //Call the original action
+                    originalAction.call(this, evt, legendItem);
+
+                    //Store values in globalObject for future graphs
+                    globalObject.legend[holdIndex] = holdBool;
+                }
+            },
             onClick: function(evt, activeElements) {
                 //Check that a point is actually clicked
                 if(activeElements[0] != undefined)
@@ -537,7 +599,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                         this.data.datasets[2].pointBackgroundColor[elementIndex] = greyColor;
                         globalObject.colorLL.set(globalObject.index, greyColor);
                     }
-                    this.update();
+                    myChart.update();
                 }
             }, 
            tooltips: {
@@ -634,23 +696,16 @@ function checkButtons() {
 
 /*
 Tag: EL (event listener)
-Description: "cycleLeft"
+Description: "cycleLeft" / "leftCycle"
             
 Parameters: void
 Return: void
 */
 document.getElementById("leftButton").onclick = function(event) {
-    console.log("position: " + globalObject.position);
-    console.log("totalSize: " + globalObject.totalSize);
-
-    globalObject.token;
-
-
     //If position = 0 then grab more videos
     //if(globalObject.currentPage + 1 == globalObject.totalPages || )
     if( globalObject.position < maxVideos && globalObject.totalSize != globalObject.videos)
     {
-        console.warn("LB #1");
         //Turn off buttons
         document.getElementById("leftButton").style.pointerEvents = "none";
         document.getElementById("rightButton").style.pointerEvents = "none";
@@ -661,7 +716,6 @@ document.getElementById("leftButton").onclick = function(event) {
         //"if" going to last page use remainder value
         if(globalObject.currentPage + 1 == globalObject.totalPages)
         {
-            console.warn("LB #2");
             globalObject.position -= globalObject.remainder;
             drawGraph(globalObject.viewLL.grabString(globalObject.position, globalObject.remainder),
             globalObject.likeLL.grabString(globalObject.position, globalObject.remainder),
@@ -672,7 +726,6 @@ document.getElementById("leftButton").onclick = function(event) {
         //"else" just use "maxVideos" value
         else
         {
-            console.warn("LB #3");
             globalObject.position -= maxVideos;
             drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
             globalObject.likeLL.grabString(globalObject.position, maxVideos),
@@ -690,7 +743,7 @@ document.getElementById("leftButton").onclick = function(event) {
 
 /*
 Tag: 
-Description: 
+Description: "cycleRight" / "rightCycle"
 Parameters: 
 Return: 
 */
@@ -698,13 +751,11 @@ document.getElementById("rightButton").onclick = function(event) {
     //"if" at last page use remainder value
     if(globalObject.currentPage == globalObject.totalPages)
     {
-        console.warn("RB #1");
         globalObject.position += globalObject.remainder;
     }
     //"else" just use "maxVideos"
     else
     {
-        console.warn("RB #2");
         globalObject.position += maxVideos;
     }
 
@@ -763,6 +814,9 @@ Return: void
 */
 function toggleDiv(divName)
 {
+    //Scroll to top left instantly
+    window.scrollTo(0, 0);
+
     //"Turn off" iframe by loading a different video
     document.getElementById('video-frame').src = "about:blank";
 
@@ -770,6 +824,9 @@ function toggleDiv(divName)
     {
         //document.getElementsByTagName("a")[0].setAttribute('href','https://www.lazybrowser.com');
         //window.location = 'https://www.lazybrowser.com';
+
+        //Clear text "input" form
+        document.getElementById('input').value = '';
 
         document.getElementById("search-page").style.display = 'none';
         document.getElementById("channel-page").style.display = 'none';

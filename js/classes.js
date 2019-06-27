@@ -217,4 +217,5 @@ class Playlist {
     likeLL = new LinkedList();
     dislikeLL = new LinkedList();
     colorLL = new LinkedList();
+    legend = [false, false, false];
 }

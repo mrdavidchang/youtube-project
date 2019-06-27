@@ -7,6 +7,14 @@
     --font-color: #202020;
 }
 
+#hide-content {
+    display: none;
+}
+
+#show-content {
+    display: default;
+}
+
 /* ----------------------------------------- 
 Navigation Bar
 (Logo, Title, Search Form, Search Button)
@@ -478,11 +486,6 @@ input[type=image]:enabled
     }
 
     #hide-level-two {
-        display: none;
-    }
-
-    /*  Hide description of channel */
-    #hide-content {
         display: none;
     }
 
