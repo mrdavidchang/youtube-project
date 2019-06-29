@@ -267,7 +267,7 @@ function goToChannel(channelObject)
             <br>
             <b>${channelObject.getViews()}</b> Total Views
 
-            <div id='hide-level-two'>
+            <div id='hide-level-three'>
                 <hr>
                 Description:<br/>${channelObject.getDescription()}
             </div>
@@ -523,6 +523,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
     myChart = new Chart(chartArea, {
         type: 'line',
         responsive: true,
+        maintainAspectRatio: false,
         data: {
           labels: dateString,
           datasets: [{ 
@@ -734,7 +735,7 @@ function cycleLeft(callback) {
         //"else" just use "maxVideos" value
         else
         {
-            try {   
+            try {
                 globalObject.position -= maxVideos;
                 drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
                 globalObject.likeLL.grabString(globalObject.position, maxVideos),
