@@ -91,8 +91,7 @@ function searchYoutube(paramSearch)
     })
     
     request.execute(response => {
-        if(response.result == undefined)
-            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+        if(response.result == undefined) alert("Sorry quota limit reached please read the \"contact + info\" page. ");
         else
         {
             let playlistItems = response.result.items;
@@ -113,7 +112,6 @@ function searchYoutube(paramSearch)
             requestChannels(idArray, channelArray);
         }
     })
-    //.catch(err => alert('Website Reached Youtube API Quota Limit!'));
 }
 
 /*
@@ -133,7 +131,7 @@ function requestChannels(idArray, channelArray)
             id: idArray.join(","),
         });
         request.execute(response => {
-            if(response.result == undefined) alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+            if(response.result == undefined) alert("Sorry quota limit reached please read the \"contact + info\" page. ");
 
             let playlistItems = response.result.items;
 
@@ -385,8 +383,7 @@ function requestPlaylist(callback) {
 
     //Execute the API request
     request.execute(response => {
-        if(response.result == undefined)
-            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+        if(response.result == undefined) alert("Sorry quota limit reached please read the \"contact + info\" page. ");
 
         //Store the nextPageToken
         globalObject.token = response.result.nextPageToken;
@@ -459,8 +456,7 @@ function requestVideos(idArray, callback)
     });                                                                                                                        
 
     dataRequestVar.execute(response => {
-        if(response.result == undefined)
-            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+        if(response.result == undefined) alert("Sorry quota limit reached please read the \"contact + info\" page. ");
 
         const videoDetailObjects = response.result.items;
         if(videoDetailObjects) {
@@ -561,9 +557,15 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
         options: {
             legend: {
                 onClick: function(evt, legendItem) {
-                    //Store the original legend onClick function because it somehow 
-                    //redraws the graph immediately while "myChart.update()" doesn't work
-                    let originalAction = Chart.defaults.global.legend.onClick;
+
+                    //See how many flags are turned on
+                    let count = 0;
+                    for(let i = 0; i < globalObject.legend.length; i++)
+                    {
+                        if(globalObject.legend[i] == true) count++;
+                    }
+
+                    //Obtain which index and value after flag
                     let holdIndex;
                     let holdBool;
 
@@ -572,12 +574,24 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                     else if(legendItem.text == "Likes") holdIndex = 1;
                     else if(legendItem.text == "Dislikes") holdIndex = 2;
                     holdBool = !(legendItem.hidden);
+                    
+                    //Conditions for legend to be disabled is:
+                    //1) count == 2 needs to be at last legend
+                    //2) then check if the legend being clicked on is "false" 
+                    //if it's false then it will turn true and the chart will disappear which is what we don't want
+                    if(!(count == 2 && globalObject.legend[holdIndex] == false))
+                    {
+                        //Store the original legend onClick function because it somehow 
+                        //redraws the graph immediately while "myChart.update()" doesn't work
+                        let originalAction = Chart.defaults.global.legend.onClick;
 
-                    //Call the original action
-                    originalAction.call(this, evt, legendItem);
+                        //Call the original action
+                        originalAction.call(this, evt, legendItem);
 
-                    //Store values in globalObject for future graphs
-                    globalObject.legend[holdIndex] = holdBool;
+                        //Store values in globalObject afterwards for future graphs
+                        //So the "originalAction" isn't affected too early
+                        globalObject.legend[holdIndex] = holdBool;
+                    }
                 }
             },
             onClick: function(evt, activeElements) {
@@ -652,6 +666,9 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                 xAxes: [{
                     ticks: {
                         fontSize: 12,
+                        autoSkip: false,
+                        maxRotation: 25,
+                        minRotation: 25,
                     },
                     scaleLabel: {
                         display: true,

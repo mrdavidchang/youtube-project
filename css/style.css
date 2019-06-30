@@ -90,7 +90,6 @@ input[type=text] {
     display: grid;
     grid-template-columns: auto;
     text-align: center;
-    align-items: center;
 }
 
 #set1 {
@@ -107,6 +106,7 @@ input[type=text] {
     overflow: hidden;
     height: 400px;
     background-color: var(--gray-color);
+    align-items: center;
 }
 
 #set3 {
@@ -115,14 +115,15 @@ input[type=text] {
     overflow: hidden;
     height: 400px;
     background-color: var(--blue-color);
+    align-items: center;
 }
 
 .title-style {
     font-family: 'Indie Flower', sans-serif;
     font-size: 45px;
     color: white;
-    align-self: center;
     pointer-events: none;
+    align-self: center;
 }
 
 .showcase-style {
@@ -138,8 +139,6 @@ input[type=text] {
     min-width: 300px;
     margin-left: auto;
     margin-right: auto;
-    position: relative;
-    bottom: 25px;
 }
 
 #showcase2 img {
@@ -147,13 +146,17 @@ input[type=text] {
     min-width: 300px;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
+    bottom: 15px;
 }
 
 #showcase3 img {
-    max-width: 85%;
+    max-width: 70%;
     min-width: 300px;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
+    top: 10px;
 }
 
 /* ----------------------------------------- */
@@ -311,13 +314,6 @@ input[type=image]:disabled
 {
     opacity: 0.5;
 }
-
-/*
-input[type=image]:enabled
-{
-    opacity: 1;
-}
-*/
 
 /* ----------------------------------------- */
 /* Search Page Section */
