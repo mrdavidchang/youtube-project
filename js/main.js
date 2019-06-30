@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const videoQuota = 50;
 const searchQuota = 20;
 const maxVideos = 15;
@@ -11,7 +13,7 @@ gapi.load('client', start);
 
 function start() {
     gapi.client.init({
-        'apiKey': 'AIzaSyDsX6BeWpKFCNbIhvIh-yICEN14TJSSANo',
+        'apiKey': process.env.API_KEY,
         'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
     })
 
