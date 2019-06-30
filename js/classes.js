@@ -15,7 +15,6 @@ class LinkedList {
 
     add(data)
     {
-        //Creates a new node
         let node = new Node(data);
         node.next = this.head;
         this.head = node;
@@ -24,10 +23,8 @@ class LinkedList {
 
     get(index)
     {
-        //Variables
         let node = this.head;
         let counter = 0;
-
 
         if(node == null)
             return null;
@@ -37,7 +34,6 @@ class LinkedList {
         }
         else 
         {
-            //Loops thru
             while(counter < index)
             {
                 node = node.next;
@@ -62,7 +58,6 @@ class LinkedList {
         }
         else
         {
-            //Loops thru
             while(counter < index)
             {
                 node = node.next;
@@ -74,7 +69,6 @@ class LinkedList {
 
     grabString(index, length)
     {
-        //First loop the number of "index" times
         let node = this.head;
 
         if(index != 0)
@@ -85,7 +79,6 @@ class LinkedList {
             }
         }
 
-        //Then loop the length
         let result = [];
         for(let i = 0; i < length; i++)
         {
@@ -194,11 +187,11 @@ class Channel {
 }
 
 class Playlist {
-    playlist = 0; //channel playlist id
+    playlist = 0;
 
     videos = 0;
     currentPage = 1;
-    totalPages = 0; //total pages of graphs
+    totalPages = 0;
 
     size = 0;
     totalSize = 0;

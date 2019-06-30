@@ -7,14 +7,6 @@
     --font-color: #202020;
 }
 
-#hide-content {
-    display: none;
-}
-
-#show-content {
-    display: default;
-}
-
 /* ----------------------------------------- 
 Navigation Bar
 (Logo, Title, Search Form, Search Button)
@@ -243,7 +235,6 @@ h4 {
     cursor: pointer;
 }
 
-/* Filter Section */
 .filter-container {
     background-color: white;
     border-radius: 25px;
@@ -277,7 +268,15 @@ h4 {
     overflow: hidden;
 }
 
-/* Misc */
+/* Extra */
+#hide-content {
+    display: none;
+}
+
+#show-content {
+    display: default;
+}
+
 .align-center {
     text-align: center;
 }
@@ -295,7 +294,6 @@ body {
     border: none;
     color: transparent;
     background-size: 100% 100%;
-    
 }
 
 #rightButton {
@@ -388,7 +386,9 @@ input[type=image]:disabled
     color: #999999;
 }
 
-
+/* ----------------------------------------- */
+/* Responsive Design Media Query */
+/* ----------------------------------------- */
 @media screen and (max-width: 1500px) {
     .info-container {
         max-width: 60%;
@@ -420,7 +420,6 @@ input[type=image]:disabled
     #sub-div { 
         width: 60%;
     }
-
 }
 
 @media screen and (max-width: 900px) {
@@ -428,7 +427,7 @@ input[type=image]:disabled
         max-width: 150px;
         max-height: 150px;
     }
-    /* Search Page Results */
+
     #sub-div {
         grid-template-columns: auto auto;
     }
@@ -448,7 +447,6 @@ input[type=image]:disabled
         top: 0px;
     }
 
-    /* Hide total uploads, total views, and description */
     #hide-level-one {
         display: none;
     }
@@ -486,7 +484,6 @@ input[type=image]:disabled
     }
 
     .showcase-style {
-        /* align-items: normal; */
         text-align: center;
     }
 
@@ -501,7 +498,6 @@ input[type=image]:disabled
 }
 
 @media screen and (max-width: 660px) {
-    /* Search Page Results */
     #sub-div {
         grid-template-columns: auto;
     }
@@ -510,7 +506,6 @@ input[type=image]:disabled
         display: none;
     }
 
-    /* Navigation Bar */
     .nav-container {
         grid-template-columns: auto;
     }
@@ -520,12 +515,10 @@ input[type=image]:disabled
         margin-bottom: 5px;
     }
 
-    /* Hide filter and video */
     #middleSection {
         display: none;
     }
 
-    /* Hide chart */
     #chartSection {
         display: none;
     }
@@ -540,7 +533,6 @@ input[type=image]:disabled
         color: transparent;
         background-color: var(--white-color);
         background-size: 100% 100%;
-
         display: block;
         margin: 25px auto;
     }
