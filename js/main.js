@@ -8,36 +8,28 @@ const redColor = "#FF0000";
 
 const chartArea = document.getElementById("myChart").getContext("2d");
 chartTrigger = 0;
-
 gapi.load('client', start);
-
 function start() {
     gapi.client.init({
         'apiKey': process.env.API_KEY,
         'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
     })
-
     toggleDiv("home-page");
 }
-
 document.getElementById("search-form").addEventListener('submit', e => {
     e.preventDefault();
-
     let page = document.getElementById("search-page");
     while(page.firstChild) {
         page.removeChild(page.firstChild);
     }
-
     if(input.value) searchYoutube(input.value);
     else toggleDiv("home-page");
 });
-
 function searchYoutube(paramSearch)
 {
     toggleDiv("search-page");
     let idArray = [];
     let channelArray = [];
-
     var request = gapi.client.youtube.search.list({
         part: 'snippet',
         type: 'channel',
@@ -46,7 +38,8 @@ function searchYoutube(paramSearch)
     })
     
     request.execute(response => {
-        if(response.result == undefined) alert("Sorry quota limit reached please read the \"contact + info\" page.");
+        if(response.result == undefined)
+            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
         else
         {
             let playlistItems = response.result.items;
@@ -55,10 +48,8 @@ function searchYoutube(paramSearch)
                     const id = `${item.snippet.channelId}`;
                     const name = `${item.snippet.title}`;
                     const picture = `${item.snippet.thumbnails.high.url}`;
-                    
                     let channel = new Channel(id, name, picture);
                     channelArray.push(channel);
-
                     idArray.push(id);
                 })
             }
@@ -66,18 +57,17 @@ function searchYoutube(paramSearch)
         }
     })
 }
-
 function requestChannels(idArray, channelArray)
 {
+    //Proper format for "id" is a string separated with commas
     var request = gapi.client.youtube.channels.list({
             part: 'statistics, contentDetails, snippet',
             id: idArray.join(","),
         });
         request.execute(response => {
-            if(response.result == undefined) alert("Sorry quota limit reached please read the \"contact + info\" page.");
+            if(response.result == undefined) alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
 
             let playlistItems = response.result.items;
-
             if(playlistItems) {
                 playlistItems.forEach(item => {
                     const subs = addCommas(`${item.statistics.subscriberCount}`);
@@ -85,7 +75,7 @@ function requestChannels(idArray, channelArray)
                     const views = addCommas(`${item.statistics.viewCount}`);
                     const playlist = `${item.contentDetails.relatedPlaylists.uploads}`;
                     const description = `${addBreak(item.snippet.description)}`;
-
+                    //Set the values for the object at the index
                     let index = findItem(`${item.id}`, idArray);
                     channelArray[index].setSubscription(subs);
                     channelArray[index].setVideos(videos);
@@ -93,7 +83,7 @@ function requestChannels(idArray, channelArray)
                     channelArray[index].setPlaylist(playlist);
                     channelArray[index].setDescription(description);
             })
-
+            //Append "divs" to "search-page"
             let appendDiv = new Array();
             let trigger = 0;
             let newline = "\r\n";
@@ -108,13 +98,11 @@ function requestChannels(idArray, channelArray)
                 const tempVid = addCommas(channelArray[i].getVideos()) + newline + "Uploads";
                 const tempView = channelArray[i].getViews() + newline + "Total Views";
                 const tempPic = channelArray[i].getPicture();
-
                 let img = document.createElement('img');
                 img.src = tempPic.toString();
                 img.width = 100;
                 img.height = 100;
                 appendDiv[i].append(img);
-
                 let app1 = document.createElement('h4');
                 let app2 = document.createElement('h4');
                 let app3 = document.createElement('h4');
@@ -124,7 +112,7 @@ function requestChannels(idArray, channelArray)
                 app2.textContent = tempVid;
                 app3.textContent = tempView;
                 app4.textContent = tempTitle;
-
+                //Assign id for CSS styling
                 app1.id = 'hide-level-two';
                 app2.id = 'hide-level-one';
                 app3.id = 'hide-level-one';
@@ -133,13 +121,10 @@ function requestChannels(idArray, channelArray)
                 appendDiv[i].append(app2);
                 appendDiv[i].append(app3);
                 appendDiv[i].append(app4);
-
                 const channelObject = channelArray[i];
-                
                 appendDiv[i].addEventListener('click', function(event) {
                     goToChannel(channelObject);
                 });
-
                 if(trigger == 0)
                 {
                     document.getElementById("search-page").appendChild(appendDiv[i]);
@@ -153,7 +138,6 @@ function requestChannels(idArray, channelArray)
         }   
     })
 }
-
 function goToChannel(channelObject)
 {
     toggleDiv("channel-page");
@@ -169,12 +153,11 @@ function goToChannel(channelObject)
         theMiddle.style.visibility = 'visible';
         theChart.style.visibility = 'visible';
     }
-
+    //(Total # of videos) / (# videos per graph)
     let totalPages = Math.ceil(channelObject.getVideos() / maxVideos);
     if(totalPages == 0) totalPages = 1;
     let pageString = "1 / " + totalPages;
     document.getElementById("pagination").innerHTML = pageString;
-
     const data = `
         <div class="font-setting">
             <b>${channelObject.getSubscription()}</b> Subscribers
@@ -182,20 +165,18 @@ function goToChannel(channelObject)
             <b>${addCommas(channelObject.getVideos())}</b> Uploads
             <br>
             <b>${channelObject.getViews()}</b> Total Views
-
             <div id='hide-level-three'>
                 <hr>
                 Description:<br/>${channelObject.getDescription()}
             </div>
         </div>
     `;
-
     const tempId = channelObject.getId();
     const tempPic = channelObject.getPicture();
     const tempName = channelObject.getName();
     loadPictureName(tempId, tempPic, tempName);
     loadChannelData(data);
-
+    //Only one created once a channel is selected from "search-page"
     globalObject = new Playlist();
     globalObject.playlist = channelObject.getPlaylist();
     globalObject.videos = channelObject.getVideos();
@@ -212,37 +193,31 @@ function goToChannel(channelObject)
     }
     requestPlaylist(requestVideos);
 }
-
 function loadPictureName(id, picture, name) {
+    //Set the settings
     let img = document.createElement("img");
     img.src = picture.toString();
     img.width = 200;
     img.height = 200;
     img.alt = "Picture of " + name;
     img.id = 'main-image';
-
     let position = document.getElementById("pictureName");
-
     while(position.hasChildNodes()) {
         position.removeChild(position.lastChild);
     }
     position.append(img);
-
     let tempLink = "https://www.youtube.com/channel/" + id;
     img.onclick = function() {
         window.open(tempLink, '_blank');
     };
-
     let appendName = document.createElement('h1');
     appendName.textContent = name;
     position.append(appendName);
 }
-
 function loadChannelData(data) {
     let statistics = document.getElementById('statistics');
     statistics.innerHTML = data;
 }
-
 function requestPlaylist(callback) {
     const token = globalObject.token;
     let requestOptions;
@@ -264,18 +239,18 @@ function requestPlaylist(callback) {
             pageToken: token,
         };
     }
-
     const request = gapi.client.youtube.playlistItems.list(requestOptions);
-
     request.execute(response => {
-        if(response.result == undefined) alert("Sorry quota limit reached please read the \"contact + info\" page.");
-
+        if(response.result == undefined)
+            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
         globalObject.token = response.result.nextPageToken;
         const itemArray = response.result.items;
 
         if(itemArray) {
+            //"idArray" is to be separated ","
             let idArray = [];
-         
+            //EXCEPT when there isn't enough videos to grab
+            //Or it's grabbing the remainding videos            
             if(itemArray.length > maxVideos)
             {
                 globalObject.size = maxVideos;
@@ -293,12 +268,11 @@ function requestPlaylist(callback) {
                 const date = `${item.snippet.publishedAt}`;
                 const title = `${item.snippet.title}`
                 const link = `${item.snippet.resourceId.videoId}`;
-
+                //Which is the channel's latest upload
                 if(globalObject.linkLL.isEmpty())
                 {
                     preloadVideo(link);
                 }
-
                 globalObject.dateLL.add(formatDate(date));
                 globalObject.titleLL.add(title);
                 globalObject.linkLL.add(link);
@@ -306,7 +280,6 @@ function requestPlaylist(callback) {
 
                 idArray.push(link);
             });
-
             callback(idArray, drawGraph);
         }
         else{
@@ -314,7 +287,6 @@ function requestPlaylist(callback) {
         }
     });
 }
-
 function requestVideos(idArray, callback)
 {
     var dataRequestVar = gapi.client.youtube.videos.list({
@@ -323,7 +295,8 @@ function requestVideos(idArray, callback)
     });                                                                                                                        
 
     dataRequestVar.execute(response => {
-        if(response.result == undefined) alert("Sorry quota limit reached please read the \"contact + info\" page.");
+        if(response.result == undefined)
+            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
 
         const videoDetailObjects = response.result.items;
         if(videoDetailObjects) {
@@ -336,12 +309,11 @@ function requestVideos(idArray, callback)
                 (globalObject.likeLL).add(likes);
                 (globalObject.dislikeLL).add(dislikes);
             }
-
+           //if at the last page update size to use remainder
            if(globalObject.currentPage == globalObject.totalPages)
             {
                 globalObject.size = globalObject.remainder;
             }
-            
             globalObject.position -= globalObject.size;
             let viewString = globalObject.viewLL.grabString(globalObject.position, globalObject.size);
             let likeString = globalObject.likeLL.grabString(globalObject.position, globalObject.size);
@@ -355,7 +327,6 @@ function requestVideos(idArray, callback)
     document.getElementById("leftButton").style.pointerEvents = "auto";
     document.getElementById("rightButton").style.pointerEvents = "auto";
 }
-
 function drawGraph(viewString, likeString, dislikeString, dateString, colorString) {
     if(chartTrigger == 0)
     {
@@ -407,26 +378,16 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
         options: {
             legend: {
                 onClick: function(evt, legendItem) {
-                    let count = 0;
-                    for(let i = 0; i < globalObject.legend.length; i++)
-                    {
-                        if(globalObject.legend[i] == true) count++;
-                    }
-
+                    //redraws the graph immediately while "myChart.update()" doesn't work
+                    let originalAction = Chart.defaults.global.legend.onClick;
                     let holdIndex;
                     let holdBool;
-
                     if(legendItem.text == "Views") holdIndex = 0;
                     else if(legendItem.text == "Likes") holdIndex = 1;
                     else if(legendItem.text == "Dislikes") holdIndex = 2;
                     holdBool = !(legendItem.hidden);
-                    
-                    if(!(count == 2 && globalObject.legend[holdIndex] == false))
-                    {
-                        let originalAction = Chart.defaults.global.legend.onClick;
-                        originalAction.call(this, evt, legendItem);
-                        globalObject.legend[holdIndex] = holdBool;
-                    }
+                    originalAction.call(this, evt, legendItem);
+                    globalObject.legend[holdIndex] = holdBool;
                 }
             },
             onClick: function(evt, activeElements) {
@@ -453,6 +414,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
             }, 
            tooltips: {
             callbacks: {
+                //So assign "globalObject.index" in "label" to use the value in "onClick"
                 label: function(item, data) {
                     let value = data.datasets[item.datasetIndex].data[item.index];
                     let math;
@@ -465,6 +427,8 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                     {
                         math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
                     }
+
+                    console.error("position: " + globalObject.position + " ||||||||||| math: " + math);
         
                     globalObject.index = math;
                     globalObject.url = "https://www.youtube.com/embed/" + globalObject.linkLL.get(math);
@@ -480,6 +444,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
           scales: {
                 yAxes: [{
                     ticks: {
+                        //1,000,000 = million
                         callback: function(label) {
                             if(label/1000000 >= 1)
                                 return label/1000000 + ' million';
@@ -493,9 +458,6 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                 xAxes: [{
                     ticks: {
                         fontSize: 12,
-                        autoSkip: false,
-                        maxRotation: 25,
-                        minRotation: 25,
                     },
                     scaleLabel: {
                         display: true,
@@ -507,7 +469,6 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
         }
     });
 }
-
 function checkButtons() {
      if(globalObject.currentPage == 1)
      {
@@ -519,7 +480,6 @@ function checkButtons() {
          document.getElementById("rightButton").enabled = true;
          document.getElementById("rightButton").disabled = false;
      }
-
      if(globalObject.currentPage < globalObject.totalPages)
      {
          document.getElementById("leftButton").enabled = true;
@@ -532,8 +492,12 @@ function checkButtons() {
          document.getElementById("leftButton").disabled = true;
      }
  }
-
 function cycleLeft(callback) {
+
+    console.log("total size: " + globalObject.totalSize);
+    console.log("position: " + globalObject.position);
+    console.log("");
+    //If position = 0 then grab more videos
     if( globalObject.position < maxVideos && globalObject.totalSize != globalObject.videos)
     {
         document.getElementById("leftButton").style.pointerEvents = "none";
@@ -572,8 +536,10 @@ function cycleLeft(callback) {
     let pageString = globalObject.currentPage + " / " + globalObject.totalPages;
     document.getElementById("pagination").innerHTML = pageString;
 }
-
 document.getElementById("rightButton").onclick = function(event) {
+    console.log("total size: " + globalObject.totalSize);
+    console.log("position: " + globalObject.position);
+    console.log("");
     if(globalObject.currentPage == globalObject.totalPages)
     {
         globalObject.position += globalObject.remainder;
@@ -582,8 +548,6 @@ document.getElementById("rightButton").onclick = function(event) {
     {
         globalObject.position += maxVideos;
     }
-
-    //Draw
     drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
     globalObject.likeLL.grabString(globalObject.position, maxVideos),
     globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
@@ -595,23 +559,19 @@ document.getElementById("rightButton").onclick = function(event) {
     let pageString = globalObject.currentPage + " / " + globalObject.totalPages;
     document.getElementById("pagination").innerHTML = pageString;
 }
-
 function addBreak(x) {
     return x.replace(/\n/g,"<br />");
 }
-
 function formatDate(d) {
     let date = new Date(d);
     let month = date.toLocaleString('en-us', { month: 'short' });
     let simplified = month + " " + date.getDate() + ", " + date.getFullYear();
     return simplified;
 }
-
 function addCommas(x) {
     let result = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return result;
 }
-
 function toggleDiv(divName)
 {
     window.scrollTo(0, 0);
@@ -619,6 +579,7 @@ function toggleDiv(divName)
 
     if(divName == "home-page")
     {
+        //window.location = 'https://www.lazybrowser.com';
         document.getElementById('input').value = '';
 
         document.getElementById("search-page").style.display = 'none';
@@ -627,12 +588,14 @@ function toggleDiv(divName)
     }
     else if(divName == "search-page")
     {
+
         document.getElementById("home-page").style.display = 'none';
         document.getElementById("channel-page").style.display = 'none';
         document.getElementById("info-page").style.display = 'none';
     }
     else if(divName == "channel-page")
     {
+
         document.getElementById("home-page").style.display = 'none';
         document.getElementById("search-page").style.display = 'none';
         document.getElementById("info-page").style.display = 'none';
@@ -645,7 +608,6 @@ function toggleDiv(divName)
     }
     document.getElementById(divName).style.display = 'block';
 }
-
 function findItem(paramId, paramArray)
 {
     for(let i = 0; i < paramArray.length; i++)
@@ -657,7 +619,6 @@ function findItem(paramId, paramArray)
     }
     return -1;
 }
-
 document.getElementById("myChart").onclick = function(evt){
     var activePoint = myChart.lastActive[0];
     if (activePoint !== undefined) 
@@ -665,7 +626,6 @@ document.getElementById("myChart").onclick = function(evt){
         document.getElementById('video-frame').src = globalObject.url;
     }
 };
-
 function preloadVideo(link) {
     globalObject.url = "https://www.youtube.com/embed/" + link;
     document.getElementById('video-frame').src = globalObject.url;
