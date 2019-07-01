@@ -406,8 +406,8 @@ function requestPlaylist(callback) {
             {
                 globalObject.setSize(itemArray.length);
             }
-            globalObject.setTotalSize(globalObject.getTotalSize + itemArray.length);
-            globalObject.setPosition(globalObject.getPosition + itemArray.length);
+            globalObject.setTotalSize(globalObject.getTotalSize() + itemArray.length);
+            globalObject.setPosition(globalObject.getPosition() + itemArray.length);
 
             checkButtons();
 
@@ -754,7 +754,7 @@ document.getElementById("rightButton").onclick = function(event) {
     }
 
     //Draw
-    drawGraph(globalObject.viewLL.grabString(globalObject.getPosition(), maxVideos),
+    drawGraph(globalObject.grabView(globalObject.getPosition(), maxVideos),
     globalObject.grabLike(globalObject.getPosition(), maxVideos),
     globalObject.grabDislike(globalObject.getPosition(), maxVideos),
     globalObject.grabDate(globalObject.getPosition(), maxVideos), 
