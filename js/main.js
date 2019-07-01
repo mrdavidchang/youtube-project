@@ -283,19 +283,16 @@ function goToChannel(channelObject)
 
     //Main GLOBAL OBJECT (Playlist object)
     //Only one created once a channel is selected from "search-page"
-    globalObject = new Playlist();
-    globalObject.playlist = channelObject.getPlaylist();
-    globalObject.videos = channelObject.getVideos();
-    globalObject.totalPages = totalPages;
+    globalObject = new Playlist(channelObject.getPlaylist(), channelObject.getVideos(), totalPages);
 
     const remainder = channelObject.getVideos() % maxVideos;
     if(remainder == 0)
     {
-        globalObject.remainder = maxVideos;
+        globalObject.setRemainder(maxVideos);
     }
     else 
     {
-        globalObject.remainder = remainder;
+        globalObject.setRemainder(remainder);
     }
     requestPlaylist(requestVideos);
 }
@@ -359,13 +356,13 @@ Return: void
 */
 function requestPlaylist(callback) {
     //If there is a valid token value use updated "requestOptions"
-    const token = globalObject.token;
+    const token = globalObject.getToken();
     let requestOptions;
 
     if(token == 0)
     {
         requestOptions = {
-            playlistId: globalObject.playlist,
+            playlistId: globalObject.getPlaylist(),
             part: 'snippet,contentDetails',
             maxResults: videoQuota,
         };
@@ -373,7 +370,7 @@ function requestPlaylist(callback) {
     else
     {
         requestOptions = {
-            playlistId: globalObject.playlist,
+            playlistId: globalObject.getPlaylist(),
             part: 'snippet,contentDetails',
             maxResults: videoQuota,
             pageToken: token,
@@ -389,7 +386,7 @@ function requestPlaylist(callback) {
             alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
 
         //Store the nextPageToken
-        globalObject.token = response.result.nextPageToken;
+        globalObject.setToken(response.result.nextPageToken);
         const itemArray = response.result.items;
 
         if(itemArray) {
@@ -403,14 +400,14 @@ function requestPlaylist(callback) {
             //Or it's grabbing the remainding videos            
             if(itemArray.length > maxVideos)
             {
-                globalObject.size = maxVideos;
+                globalObject.setSize(maxVideos);
             }
             else
             {
-                globalObject.size = itemArray.length;
+                globalObject.setSize(itemArray.length);
             }
-            globalObject.totalSize += itemArray.length;
-            globalObject.position += itemArray.length;
+            globalObject.setTotalSize(globalObject.getTotalSize + itemArray.length);
+            globalObject.setPosition(globalObject.getPosition + itemArray.length);
 
             checkButtons();
 
@@ -421,16 +418,16 @@ function requestPlaylist(callback) {
 
                 //If LinkedList is empty then preload the first video
                 //Which is the channel's latest upload
-                if(globalObject.linkLL.isEmpty())
+                if(globalObject.getLinkLL().isEmpty())
                 {
                     preloadVideo(link);
                 }
 
                 //Store data into LinkedLists
-                globalObject.dateLL.add(formatDate(date));
-                globalObject.titleLL.add(title);
-                globalObject.linkLL.add(link);
-                globalObject.colorLL.add(greyColor);
+                globalObject.addDate(formatDate(date));
+                globalObject.addTitle(title);
+                globalObject.addLink(link);
+                globalObject.addColor(greyColor);
 
                 idArray.push(link);
             });
@@ -470,31 +467,23 @@ function requestVideos(idArray, callback)
                 const likes = `${videoDetailObjects[index].statistics.likeCount}`;
                 const dislikes = `${videoDetailObjects[index].statistics.dislikeCount}`;
 
-                (globalObject.viewLL).add(views);
-                (globalObject.likeLL).add(likes);
-                (globalObject.dislikeLL).add(dislikes);
+                globalObject.addView(views);
+                globalObject.addLike(likes);
+                globalObject.addDislike(dislikes);
             }
 
-            //Prepare the arrays as string for final parsing
-            /*
-            if(globalObject.size <= globalObject.position <= maxVideos)
+           if(globalObject.getCurrentPage() == globalObject.getTotalPages())
             {
-                globalObject.size = globalObject.position;
-            }
-            */
-           //if at the last page update size to use remainder
-           if(globalObject.currentPage == globalObject.totalPages)
-            {
-                globalObject.size = globalObject.remainder;
+                globalObject.setSize(globalObject.getRemainder());
             }
             
             //Prepare the arrays as string for final parsing
-            globalObject.position -= globalObject.size;
-            let viewString = globalObject.viewLL.grabString(globalObject.position, globalObject.size);
-            let likeString = globalObject.likeLL.grabString(globalObject.position, globalObject.size);
-            let dislikeString = globalObject.dislikeLL.grabString(globalObject.position, globalObject.size);
-            let dateString = globalObject.dateLL.grabString(globalObject.position, globalObject.size);
-            let colorString = globalObject.colorLL.grabString(globalObject.position, globalObject.size);
+            globalObject.setPosition(globalObject.getPosition() - globalObject.getSize());
+            let viewString = globalObject.grabView(globalObject.getPosition(), globalObject.getSize());
+            let likeString = globalObject.grabLike(globalObject.getPosition(), globalObject.getSize());
+            let dislikeString = globalObject.grabDislike(globalObject.getPosition(), globalObject.getSize());
+            let dateString = globalObject.grabDate(globalObject.getPosition(), globalObject.getSize());
+            let colorString = globalObject.grabColor(globalObject.getPosition(), globalObject.getSize());
 
             callback(viewString, likeString, dislikeString, dateString, colorString);
         }
@@ -534,7 +523,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
               pointRadius: 7,
               pointHoverRadius: 8,
               pointBackgroundColor: colorString,
-              hidden: globalObject.legend[0],
+              hidden: globalObject.getLegendOne(),
             },
             { 
               data: likeString,
@@ -544,7 +533,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
               pointRadius: 5,
               pointHoverRadius: 6,
               pointBackgroundColor: colorString,
-              hidden: globalObject.legend[1],
+              hidden: globalObject.getLegendTwo(),
             },
             {
                 data: dislikeString,
@@ -554,7 +543,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                 pointRadius: 5,
                 pointHoverRadius: 6,
                 pointBackgroundColor: colorString,
-                hidden: globalObject.legend[2],
+                hidden: globalObject.getLegendThree(),
             }
           ]
         },
@@ -577,7 +566,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                     originalAction.call(this, evt, legendItem);
 
                     //Store values in globalObject for future graphs
-                    globalObject.legend[holdIndex] = holdBool;
+                    globalObject.setLegend(holdIndex, holdBool);
                 }
             },
             onClick: function(evt, activeElements) {
@@ -591,14 +580,14 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                         this.data.datasets[0].pointBackgroundColor[elementIndex] = redColor;
                         this.data.datasets[1].pointBackgroundColor[elementIndex] = redColor;
                         this.data.datasets[2].pointBackgroundColor[elementIndex] = redColor;
-                        globalObject.colorLL.set(globalObject.index, redColor);
+                        globalObject.setColor(globalObject.getIndex(), redColor);
                     }
                     else
                     {
                         this.data.datasets[0].pointBackgroundColor[elementIndex] = greyColor;
                         this.data.datasets[1].pointBackgroundColor[elementIndex] = greyColor;
                         this.data.datasets[2].pointBackgroundColor[elementIndex] = greyColor;
-                        globalObject.colorLL.set(globalObject.index, greyColor);
+                        globalObject.setColor(globalObject.getIndex(), greyColor);
                     }
                     myChart.update();
                 }
@@ -611,21 +600,19 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                     let value = data.datasets[item.datasetIndex].data[item.index];
                     let math;
 
-                    if(globalObject.currentPage == globalObject.totalPages)
+                    if(globalObject.getCurrentPage() == globalObject.getTotalPages())
                     {
                         math = item.index;
                     }
                     else
                     {
-                        math = globalObject.totalSize - (globalObject.currentPage * maxVideos - item.index);
+                        math = globalObject.getTotalSize() - (globalObject.getCurrentPage() * maxVideos - item.index);
                     }
-
-                    console.error("position: " + globalObject.position + " ||||||||||| math: " + math);
         
-                    globalObject.index = math;
-                    globalObject.url = "https://www.youtube.com/embed/" + globalObject.linkLL.get(math);
+                    globalObject.setIndex(math);
+                    globalObject.setUrl("https://www.youtube.com/embed/" + globalObject.getLinkLL().get(math));
                     let message = [];
-                    message.push(globalObject.titleLL.get(math));
+                    message.push(globalObject.getTitleLL().get(math));
                     message.push(addCommas(value));
                     return message;
                 },
@@ -672,7 +659,7 @@ Return: void
 */
 function checkButtons() {
     //Right Button
-     if(globalObject.currentPage == 1)
+     if(globalObject.getCurrentPage() == 1)
      {
          document.getElementById("rightButton").enabled = false;
          document.getElementById("rightButton").disabled = true;
@@ -684,13 +671,13 @@ function checkButtons() {
      }
 
      //Left Button
-     if(globalObject.currentPage < globalObject.totalPages)
+     if(globalObject.getCurrentPage() < globalObject.getTotalPages())
      {
          document.getElementById("leftButton").enabled = true;
          document.getElementById("leftButton").disabled = false;
  
      }
-     else if(globalObject.currentPage == globalObject.totalPages)
+     else if(globalObject.getCurrentPage() == globalObject.getTotalPages())
      {
          document.getElementById("leftButton").enabled = false;
          document.getElementById("leftButton").disabled = true;
@@ -705,14 +692,7 @@ Parameters: void
 Return: void
 */
 function cycleLeft(callback) {
-
-    console.log("total size: " + globalObject.totalSize);
-    console.log("position: " + globalObject.position);
-    console.log("");
-//document.getElementById("leftButton").onclick = function(event) {
-    //If position = 0 then grab more videos
-    //if(globalObject.currentPage + 1 == globalObject.totalPages || )
-    if( globalObject.position < maxVideos && globalObject.totalSize != globalObject.videos)
+    if( globalObject.getPosition() < maxVideos && globalObject.getTotalSize() != globalObject.getVideos())
     {
         //Turn off buttons
         document.getElementById("leftButton").style.pointerEvents = "none";
@@ -723,25 +703,25 @@ function cycleLeft(callback) {
     else
     {
         //"if" going to last page use remainder value
-        if(globalObject.currentPage + 1 == globalObject.totalPages)
+        if(globalObject.getCurrentPage() + 1 == globalObject.getTotalPages())
         {
-            globalObject.position -= globalObject.remainder;
-            drawGraph(globalObject.viewLL.grabString(globalObject.position, globalObject.remainder),
-            globalObject.likeLL.grabString(globalObject.position, globalObject.remainder),
-            globalObject.dislikeLL.grabString(globalObject.position, globalObject.remainder),
-            globalObject.dateLL.grabString(globalObject.position, globalObject.remainder),
-            globalObject.colorLL.grabString(globalObject.position, globalObject.remainder));
+            globalObject.setPosition(globalObject.getPosition() - globalObject.getRemainder());
+            drawGraph(globalObject.grabView(globalObject.getPosition(), globalObject.getRemainder()),
+            globalObject.grabLike(globalObject.getPosition(), globalObject.getRemainder()),
+            globalObject.grabDislike(globalObject.getPosition(), globalObject.getRemainder()),
+            globalObject.grabDate(globalObject.getPosition(), globalObject.getRemainder()),
+            globalObject.grabColor(globalObject.getPosition(), globalObject.getRemainder()));
         }
         //"else" just use "maxVideos" value
         else
         {
             try {
-                globalObject.position -= maxVideos;
-                drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
-                globalObject.likeLL.grabString(globalObject.position, maxVideos),
-                globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
-                globalObject.dateLL.grabString(globalObject.position, maxVideos), 
-                globalObject.colorLL.grabString(globalObject.position, maxVideos));
+                globalObject.setPosition(globalObject.getPosition() - maxVideos);
+                drawGraph(globalObject.grabView(globalObject.getPosition(), maxVideos),
+                globalObject.grabLike(globalObject.getPosition(), maxVideos),
+                globalObject.grabDislike(globalObject.getPosition(), maxVideos),
+                globalObject.grabDate(globalObject.getPosition(), maxVideos), 
+                globalObject.grabColor(globalObject.getPosition(), maxVideos));
             }
             catch(e) {
                 console.error("undefined");
@@ -749,9 +729,9 @@ function cycleLeft(callback) {
         }
     }
 
-    globalObject.currentPage++;
+    globalObject.setCurrentPage(globalObject.getCurrentPage() + 1);
     checkButtons();
-    let pageString = globalObject.currentPage + " / " + globalObject.totalPages;
+    let pageString = globalObject.getCurrentPage() + " / " + globalObject.getTotalPages();
     document.getElementById("pagination").innerHTML = pageString;
 }
 
@@ -762,31 +742,27 @@ Parameters:
 Return: 
 */
 document.getElementById("rightButton").onclick = function(event) {
-    console.log("total size: " + globalObject.totalSize);
-    console.log("position: " + globalObject.position);
-    console.log("");
-
     //"if" at last page use remainder value
-    if(globalObject.currentPage == globalObject.totalPages)
+    if(globalObject.getCurrentPage() == globalObject.getTotalPages())
     {
-        globalObject.position += globalObject.remainder;
+        globalObject.setPosition(globalObject.getPosition() + globalObject.getRemainder());
     }
     //"else" just use "maxVideos"
     else
     {
-        globalObject.position += maxVideos;
+        globalObject.setPosition(globalObject.getPosition() + maxVideos);
     }
 
     //Draw
-    drawGraph(globalObject.viewLL.grabString(globalObject.position, maxVideos),
-    globalObject.likeLL.grabString(globalObject.position, maxVideos),
-    globalObject.dislikeLL.grabString(globalObject.position, maxVideos),
-    globalObject.dateLL.grabString(globalObject.position, maxVideos),
-    globalObject.colorLL.grabString(globalObject.position, maxVideos));
+    drawGraph(globalObject.viewLL.grabString(globalObject.getPosition(), maxVideos),
+    globalObject.grabLike(globalObject.getPosition(), maxVideos),
+    globalObject.grabDislike(globalObject.getPosition(), maxVideos),
+    globalObject.grabDate(globalObject.getPosition(), maxVideos), 
+    globalObject.grabColor(globalObject.getPosition(), maxVideos));
 
-    globalObject.currentPage--;
+    globalObject.setCurrentPage(globalObject.getCurrentPage() - 1);
     checkButtons();
-    let pageString = globalObject.currentPage + " / " + globalObject.totalPages;
+    let pageString = globalObject.getCurrentPage() + " / " + globalObject.getTotalPages();
     document.getElementById("pagination").innerHTML = pageString;
 }
 
@@ -904,7 +880,7 @@ document.getElementById("myChart").onclick = function(evt){
     var activePoint = myChart.lastActive[0];
     if (activePoint !== undefined) 
     {
-        document.getElementById('video-frame').src = globalObject.url;
+        document.getElementById('video-frame').src = globalObject.getUrl();
     }
 };
 
@@ -915,6 +891,6 @@ Parameters: "link" - video url to link to
 Return: void
 */
 function preloadVideo(link) {
-    globalObject.url = "https://www.youtube.com/embed/" + link;
-    document.getElementById('video-frame').src = globalObject.url;
+    globalObject.setUrl("https://www.youtube.com/embed/" + link);
+    document.getElementById('video-frame').src = globalObject.getUrl();
 }

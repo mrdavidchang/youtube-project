@@ -194,27 +194,224 @@ class Channel {
 }
 
 class Playlist {
-    playlist = 0; //channel playlist id
+    constructor(playlist, videos, totalPages)
+    {
+        this.playlist = playlist;
+        this.videos = videos;
+        this.totalPages = totalPages;
+        this.currentPage = 1;
 
-    videos = 0;
-    currentPage = 1;
-    totalPages = 0; //total pages of graphs
+        this.size = 0;
+        this.totalSize = 0;
+        this.position = 0;
+        this.remainder = 0;
 
-    size = 0;
-    totalSize = 0;
-    position = 0;
-    remainder = 0;
+        this.token = 0;
+        this.index = 0;
+        this.url = 0;
 
-    token = 0;
-    index = 0;
-    url = 0;
+        this.dateLL = new LinkedList();
+        this.titleLL = new LinkedList();
+        this.linkLL = new LinkedList();
+        this.viewLL = new LinkedList();
+        this.likeLL = new LinkedList();
+        this.dislikeLL = new LinkedList();
+        this.colorLL = new LinkedList();
+        this.legend = [false, false, false];
+    }
 
-    dateLL = new LinkedList();
-    titleLL = new LinkedList();
-    linkLL = new LinkedList();
-    viewLL = new LinkedList();
-    likeLL = new LinkedList();
-    dislikeLL = new LinkedList();
-    colorLL = new LinkedList();
-    legend = [false, false, false];
+    getPlaylist(){
+        return this.playlist;
+    }
+
+    setPlaylist(playlist) {
+        this.playlist = playlist;
+    }
+
+    getVideos() {
+        return this.videos;
+    }
+
+    setVideos(videos) {
+        this.videos = videos;
+    }
+
+    getTotalPages() {
+        return this.totalPages;
+    }
+
+    setTotalPages(totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    getCurrentPage() {
+        return this.currentPage;
+    }
+
+    setCurrentPage(currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    getSize() {
+        return this.size;
+    }
+
+    setSize(size) {
+        this.size = size;
+    }
+
+    getTotalSize() {
+        return this.totalSize;
+    }
+
+    setTotalSize(totalSize) {
+        this.totalSize = totalSize;
+    }
+
+    getPosition() {
+        return this.position;
+    }
+
+    setPosition(position) {
+        this.position = position;
+    }
+
+    getRemainder() {
+        return this.remainder;
+    }
+
+    setRemainder(remainder) {
+        this.remainder = remainder;
+    }
+
+    getToken() {
+        return this.token;
+    }
+
+    setToken(token) {
+        this.token = token;
+    }
+
+    getIndex() {
+        return this.index;
+    }
+
+    setIndex(index) {
+        this.index = index;
+    }
+
+    getUrl() {
+        return this.url;
+    }
+
+    setUrl(url) {
+        this.url = url;
+    }
+
+    getDateLL() {
+        return this.dateLL;
+    }
+
+    addDate(value) {
+        (this.dateLL).add(value);
+    }
+
+    getTitleLL() {
+        return this.titleLL;
+    }
+
+    addTitle(value) {
+        (this.titleLL).add(value);
+    }
+
+    getLinkLL() {
+        return this.linkLL;
+    }
+
+    addLink(value) {
+        (this.linkLL).add(value);
+    }
+
+    getViewLL() {
+        return this.viewLL;
+    }
+
+    addView(value) {
+        (this.viewLL).add(value);
+    }
+
+    getLikeLL() {
+        return this.likeLL;
+    }
+
+    addLike(value) {
+        (this.likeLL).add(value);
+    }
+
+    getDislikeLL() {
+        return this.dislikeLL;
+    }
+
+    addDislike(value) {
+        (this.dislikeLL).add(value);
+    }
+
+    getColorLL() {
+        return this.colorLL;
+    }
+
+    addColor(value) {
+        (this.colorLL).add(value);
+    }
+
+    grabView(position, size) {
+        return (this.viewLL).grabString(position, size);
+    }
+
+    grabLike(position, size) {
+        return (this.likeLL).grabString(position, size);
+    }
+
+    grabDislike(position, size) {
+        return (this.dislikeLL).grabString(position, size);
+    }
+
+    grabDate(position, size) {
+        return (this.dateLL).grabString(position, size);
+    }
+
+    grabColor(position, size) {
+        return (this.colorLL).grabString(position, size);
+    }
+
+    getLegendOne() {
+        return this.legend[0];
+    }
+
+    getLegendTwo() {
+        return this.legend[1];
+    }
+
+    getLegendThree() {
+        return this.legend[2];
+    }
+
+    setLegend(index, value)
+    {
+        this.legend[index] = value;
+    }
+
+    setColor(index, value)
+    {
+        this.colorLL.set(index, value);
+    }
+
+
+
+
+
+
+
+
+    
 }
