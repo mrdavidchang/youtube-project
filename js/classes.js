@@ -405,4 +405,8 @@ class Playlist {
     {
         this.colorLL.set(index, value);
     }
+
+    getLegend() {
+        return this.legend;
+    }
 }

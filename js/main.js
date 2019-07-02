@@ -555,18 +555,35 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                     let originalAction = Chart.defaults.global.legend.onClick;
                     let holdIndex;
                     let holdBool;
+                    let counter = 0;
 
-                    //Assign index and bool values
-                    if(legendItem.text == "Views") holdIndex = 0;
-                    else if(legendItem.text == "Likes") holdIndex = 1;
-                    else if(legendItem.text == "Dislikes") holdIndex = 2;
-                    holdBool = !(legendItem.hidden);
+                    if(globalObject.getLegendOne() == true)
+                    {
+                        counter++;
+                    }
+                    if(globalObject.getLegendTwo() == true)
+                    {
+                        counter++;
+                    }
+                    if(globalObject.getLegendThree() == true)
+                    {
+                        counter++;
+                    }
 
-                    //Call the original action
-                    originalAction.call(this, evt, legendItem);
+                    if(!(counter == 2 && legendItem.hidden == false))
+                    {
+                        //Assign index and bool values
+                        if(legendItem.text == "Views") holdIndex = 0;
+                        else if(legendItem.text == "Likes") holdIndex = 1;
+                        else if(legendItem.text == "Dislikes") holdIndex = 2;
+                        holdBool = !(legendItem.hidden);
 
-                    //Store values in globalObject for future graphs
-                    globalObject.setLegend(holdIndex, holdBool);
+                        //Call the original action
+                        originalAction.call(this, evt, legendItem);
+
+                        //Store values in globalObject for future graphs
+                        globalObject.setLegend(holdIndex, holdBool);
+                    }
                 }
             },
             onClick: function(evt, activeElements) {
