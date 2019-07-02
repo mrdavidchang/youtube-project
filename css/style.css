@@ -181,18 +181,18 @@ input[type=text] {
 }
 
 h1 {
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'PT Sans', Verdana;
     font-size: 25px;
     color: var(--font-color);
 }
 
 h3 {
-    font-family: 'Bitter', sans-serif;
+    font-family: 'Bitter', Verdana;
     font-size: 20px;
 }
 
 h4 {
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'PT Sans', Verdana;
     font-size: 16px;
     color: var(--font-color);
 }
@@ -495,21 +495,6 @@ input[type=image]:enabled
         /* align-items: normal; */
         text-align: center;
     }
-
-    /*
-    #showcase1 img {
-        bottom: 20px;
-    }
-
-    #showcase2 img {
-        bottom: 10px;
-    }
-    
-    #showcase3 img {
-        position: relative;
-        bottom: 20px;
-    }
-    */
 }
 
 @media screen and (max-width: 660px) {
