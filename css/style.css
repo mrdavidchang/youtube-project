@@ -121,8 +121,10 @@ input[type=text] {
     font-family: 'Indie Flower', sans-serif;
     font-size: 45px;
     color: white;
-    align-self: center;
     pointer-events: none;
+    align-self: center;
+    align-items: center;
+    align-content: center;
 }
 
 .showcase-style {
@@ -147,6 +149,7 @@ input[type=text] {
     min-width: 300px;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
 }
 
 #showcase3 img {
@@ -495,12 +498,16 @@ input[type=image]:enabled
     }
 
     #showcase1 img {
-        bottom: 60px;
+        bottom: 20px;
+    }
+
+    #showcase2 img {
+        bottom: 10px;
     }
     
     #showcase3 img {
         position: relative;
-        bottom: 10px;
+        bottom: 20px;
     }
 }
 
