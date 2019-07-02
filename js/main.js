@@ -733,6 +733,8 @@ function cycleLeft(callback) {
     checkButtons();
     let pageString = globalObject.getCurrentPage() + " / " + globalObject.getTotalPages();
     document.getElementById("pagination").innerHTML = pageString;
+
+    window.scrollTo(0,document.body.scrollHeight);
 }
 
 /*
@@ -764,6 +766,8 @@ document.getElementById("rightButton").onclick = function(event) {
     checkButtons();
     let pageString = globalObject.getCurrentPage() + " / " + globalObject.getTotalPages();
     document.getElementById("pagination").innerHTML = pageString;
+
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 /*
