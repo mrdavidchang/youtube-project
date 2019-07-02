@@ -136,16 +136,15 @@ input[type=text] {
 }
 
 #showcase1 img {
-    max-width: 70%;
+    max-width: 60%;
     min-width: 300px;
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    bottom: 25px;
 }
 
 #showcase2 img {
-    max-width: 70%;
+    max-width: 60%;
     min-width: 300px;
     margin-left: auto;
     margin-right: auto;
@@ -153,7 +152,7 @@ input[type=text] {
 }
 
 #showcase3 img {
-    max-width: 85%;
+    max-width: 60%;
     min-width: 300px;
     margin-left: auto;
     margin-right: auto;
@@ -497,6 +496,7 @@ input[type=image]:enabled
         text-align: center;
     }
 
+    /*
     #showcase1 img {
         bottom: 20px;
     }
@@ -509,6 +509,7 @@ input[type=image]:enabled
         position: relative;
         bottom: 20px;
     }
+    */
 }
 
 @media screen and (max-width: 660px) {
