@@ -379,7 +379,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
               label: "Views",
               borderColor: "#0ABDE3",
               fill: false,
-              pointRadius: 7,
+              pointRadius: 9,
               pointHoverRadius: 8,
               pointBackgroundColor: colorString,
               hidden: globalObject.getLegendOne(),
@@ -389,7 +389,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
               label: "Likes",
               borderColor: "#3de117",
               fill: false,
-              pointRadius: 5,
+              pointRadius: 7,
               pointHoverRadius: 6,
               pointBackgroundColor: colorString,
               hidden: globalObject.getLegendTwo(),
@@ -399,7 +399,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                 label: "Dislikes",
                 borderColor: "#FFA500",
                 fill: false,
-                pointRadius: 5,
+                pointRadius: 7,
                 pointHoverRadius: 6,
                 pointBackgroundColor: colorString,
                 hidden: globalObject.getLegendThree(),
@@ -409,6 +409,13 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                }
+                
+            },
             legend: {
                 onClick: function(evt, legendItem) {
                     let originalAction = Chart.defaults.global.legend.onClick;
