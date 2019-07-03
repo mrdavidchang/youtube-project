@@ -114,15 +114,20 @@ function requestChannels(idArray, channelArray)
                 img.height = 100;
                 appendDiv[i].append(img);
 
-                let app1 = document.createElement('h4');
-                let app2 = document.createElement('h4');
-                let app3 = document.createElement('h4');
-                let app4 = document.createElement('h4');
+                let app1 = document.createElement('p');
+                let app2 = document.createElement('p');
+                let app3 = document.createElement('p');
+                let app4 = document.createElement('p');
 
                 app1.textContent = tempSub;
                 app2.textContent = tempVid;
                 app3.textContent = tempView;
                 app4.textContent = tempTitle;
+
+                app1.className = "sub-font1";
+                app2.className = "sub-font1";
+                app3.className = "sub-font1";
+                app4.className = "sub-font2";
 
                 app1.id = 'hide-level-two';
                 app2.id = 'hide-level-one';
@@ -351,10 +356,11 @@ function requestVideos(idArray, callback)
     })
     document.getElementById("leftButton").style.pointerEvents = "auto";
     document.getElementById("rightButton").style.pointerEvents = "auto";
-    smoothScroll();
 }
 
 function drawGraph(viewString, likeString, dislikeString, dateString, colorString) {
+    var pos = $(document).scrollTop();
+    
     if(chartTrigger == 0)
     {
         chartTrigger = 1;
@@ -366,8 +372,6 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
 
     myChart = new Chart(chartArea, {
         type: 'line',
-        responsive: true,
-        maintainAspectRatio: false,
         data: {
           labels: dateString,
           datasets: [{ 
@@ -403,6 +407,8 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
           ]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             legend: {
                 onClick: function(evt, legendItem) {
                     let originalAction = Chart.defaults.global.legend.onClick;
@@ -500,6 +506,9 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                 xAxes: [{
                     ticks: {
                         fontSize: 12,
+                        autoSkip: false,
+                        maxRotation: 30,
+                        minRotation: 30,
                     },
                     scaleLabel: {
                         display: true,
@@ -510,6 +519,8 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
           },
         }
     });
+
+    $(document).scrollTop(pos);
 }
 
 function checkButtons() {
@@ -538,6 +549,8 @@ function checkButtons() {
  }
 
 function cycleLeft(callback) {
+    //var pos = $(document).scrollTop();
+
     if( globalObject.getPosition() < maxVideos && globalObject.getTotalSize() != globalObject.getVideos())
     {
         document.getElementById("leftButton").style.pointerEvents = "none";
@@ -576,16 +589,12 @@ function cycleLeft(callback) {
     let pageString = globalObject.getCurrentPage() + " / " + globalObject.getTotalPages();
     document.getElementById("pagination").innerHTML = pageString;
 
-    smoothScroll();
+    //$(document).scrollTop(pos);
 }
-
-function smoothScroll() {
-    //document.getElementById('video-frame').scrollIntoView({block: "start"});
-    document.getElementById('video-wrap').scrollIntoView({block: "start"});
-}
-
 
 document.getElementById("rightButton").onclick = function(event) {
+    //var pos = $(document).scrollTop();
+
     if(globalObject.getCurrentPage() == globalObject.getTotalPages())
     {
         globalObject.setPosition(globalObject.getPosition() + globalObject.getRemainder());
@@ -606,7 +615,7 @@ document.getElementById("rightButton").onclick = function(event) {
     let pageString = globalObject.getCurrentPage() + " / " + globalObject.getTotalPages();
     document.getElementById("pagination").innerHTML = pageString;
 
-    smoothScroll();
+    //$(document).scrollTop(pos);
 }
 
 function addBreak(x) {

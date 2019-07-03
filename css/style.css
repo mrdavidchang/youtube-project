@@ -46,7 +46,7 @@ Navigation Bar
 
 #title a {
     text-decoration: none;
-    font-family: 'Rock Salt', serif;
+    font-family: 'Rock Salt', Verdana;
     font-size: 23px;
     color: var(--font-color);    
 }
@@ -118,7 +118,7 @@ input[type=text] {
 }
 
 .title-style {
-    font-family: 'Indie Flower', sans-serif;
+    font-family: 'Indie Flower', Verdana;
     font-size: 45px;
     color: white;
     pointer-events: none;
@@ -186,13 +186,14 @@ h1 {
     color: var(--font-color);
 }
 
-h3 {
-    font-family: 'Bitter', Verdana;
-    font-size: 20px;
+.sub-font1 {
+    font-family: Verdana;
+    font-size: 14px;
+    color: var(--font-color);
 }
 
-h4 {
-    font-family: 'PT Sans', Verdana;
+.sub-font2 {
+    font-family: Verdana;
     font-size: 16px;
     color: var(--font-color);
 }
@@ -268,9 +269,10 @@ h4 {
 /* ----------------------------------------- */
 
 .chart-container {
-    width: 90%;
-    height: 100%;
+    width: 100%;
     max-width: 1100px;
+    height: 330px;
+    max-height: 330px;
 
     margin: 25px auto;
     overflow: hidden;
@@ -465,6 +467,7 @@ input[type=image]:enabled
 }
 
 @media screen and (max-width: 735px) {
+
     #set1 {
         grid-template-columns: auto;
         height: 450px;
