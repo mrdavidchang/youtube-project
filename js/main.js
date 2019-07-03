@@ -549,7 +549,6 @@ function checkButtons() {
  }
 
 function cycleLeft(callback) {
-    //var pos = $(document).scrollTop();
 
     if( globalObject.getPosition() < maxVideos && globalObject.getTotalSize() != globalObject.getVideos())
     {
@@ -589,11 +588,9 @@ function cycleLeft(callback) {
     let pageString = globalObject.getCurrentPage() + " / " + globalObject.getTotalPages();
     document.getElementById("pagination").innerHTML = pageString;
 
-    //$(document).scrollTop(pos);
 }
 
 document.getElementById("rightButton").onclick = function(event) {
-    //var pos = $(document).scrollTop();
 
     if(globalObject.getCurrentPage() == globalObject.getTotalPages())
     {
@@ -614,8 +611,6 @@ document.getElementById("rightButton").onclick = function(event) {
     checkButtons();
     let pageString = globalObject.getCurrentPage() + " / " + globalObject.getTotalPages();
     document.getElementById("pagination").innerHTML = pageString;
-
-    //$(document).scrollTop(pos);
 }
 
 function addBreak(x) {
