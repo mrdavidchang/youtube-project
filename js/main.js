@@ -44,8 +44,7 @@ function searchYoutube(paramSearch)
     })
     
     request.execute(response => {
-        if(response.result == undefined)
-            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+        if(response.result == undefined) ("Quota Limit Reached: Please read \"contact + info\"");
         else
         {
             let playlistItems = response.result.items;
@@ -73,7 +72,7 @@ function requestChannels(idArray, channelArray)
             id: idArray.join(","),
         });
         request.execute(response => {
-            if(response.result == undefined) alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+            if(response.result == undefined) ("Quota Limit Reached: Please read \"contact + info\"");
 
             let playlistItems = response.result.items;
 
@@ -268,8 +267,7 @@ function requestPlaylist(callback) {
     const request = gapi.client.youtube.playlistItems.list(requestOptions);
 
     request.execute(response => {
-        if(response.result == undefined)
-            alert("QUOTA LIMIT REACHED BLAME YOUTUBE");
+        if(response.result == undefined) ("Quota Limit Reached: Please read \"contact + info\"");
 
         globalObject.setToken(response.result.nextPageToken);
         const itemArray = response.result.items;
