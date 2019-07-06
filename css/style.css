@@ -351,11 +351,12 @@ input[type=image]:disabled
 .contact-container {
     background-color: white;
     max-width: 60%;
+    min-width: 275px;
     width: 100%;
 
     text-align: left;
     margin: 25px auto;
-    padding: 30px;
+    padding: 20px;
     border-radius: 25px;
 
     border: 1px solid var(--border-color);
