@@ -420,8 +420,8 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
             maintainAspectRatio: false,
             layout: {
                 padding: {
-                    left: 10,
-                    right: 10,
+                    left: 11,
+                    right: 11,
                 }
                 
             },
