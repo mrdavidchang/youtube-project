@@ -1,3 +1,5 @@
+<!-- Author: David Chang -->
+<!-- Contact: davidchang@lazybrowser.com -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,16 +62,40 @@
                         responsive & 
                         <br>
                         intuitive design
-                        
                     </div>
                     <div id="showcase3" class="showcase-style">
                         <img src="/img/showcase3.png">
                     </div>
                 </div>
 
-                <a id="info-button" onclick="toggleDiv('info-page');">contact + info</a>
+                <a id="info-button" onclick="toggleDiv('contact-page');">contact + info</a>
             </div>
-            <div id="info-page"></div>
+            <div id="contact-page">
+                <div class="contact-container">
+                        <p> Hi,
+                            <br>
+                            This is a live demo website of my full stack Javascript web application.
+                            <br>
+                            Inspired by my desire to binge watch Youtube channels faster.
+                            <br>
+                            It utilizes HTML, CSS, Javascript, Youtube Data API v3, Chart.js, and jQuery.
+                            <br>
+                            <br>
+                            Currently the website is on a 10,000 quota/data limit (which is very very little).
+                            <br>
+                            If the website is down it's most likely because all the quota have been used and will be reset at midnight.
+                            <br>           
+                            I emailed and submitted a quota increase request form to Youtube, so hopefully I will get a response.
+                            <br>
+                            <br>
+                            Thank you for visiting!
+                            <br>
+                            David Chang
+                            <br>
+                            davidchang@lazybrowser.com
+                        </p>
+                    </div>
+            </div>
             <div id="search-page"></div>
             <div id="channel-page">
                 <!-- Info Section -->
@@ -92,7 +118,7 @@
                 <section id="middleSection">
                     <div class="filter-container">
                         <input type="image" src="/img/leftArrow.png" id="leftButton" onClick="cycleLeft(requestPlaylist);"/>
-                        <input type="image" src="/img/rightArrow.png" id="rightButton" onClick="smoothScroll();"/>
+                        <input type="image" src="/img/rightArrow.png" id="rightButton"/>
                         <div id="hide-search">
                             <div id="pagination"></div>
                             <p>(click points for video)</p>

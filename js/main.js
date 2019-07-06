@@ -516,7 +516,7 @@ function drawGraph(viewString, likeString, dislikeString, dateString, colorStrin
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Date Video Uploaded                  ',
+                        labelString: 'Date Video Uploaded                   ',
                     }
                 }
             ]
@@ -645,21 +645,21 @@ function toggleDiv(divName)
 
         document.getElementById("search-page").style.display = 'none';
         document.getElementById("channel-page").style.display = 'none';
-        document.getElementById("info-page").style.display = 'none';
+        document.getElementById("contact-page").style.display = 'none';
     }
     else if(divName == "search-page")
     {
         document.getElementById("home-page").style.display = 'none';
         document.getElementById("channel-page").style.display = 'none';
-        document.getElementById("info-page").style.display = 'none';
+        document.getElementById("contact-page").style.display = 'none';
     }
     else if(divName == "channel-page")
     {
         document.getElementById("home-page").style.display = 'none';
         document.getElementById("search-page").style.display = 'none';
-        document.getElementById("info-page").style.display = 'none';
+        document.getElementById("contact-page").style.display = 'none';
     }
-    else if(divName == "info-page")
+    else if(divName == "contact-page")
     {
         document.getElementById("home-page").style.display = 'none';
         document.getElementById("search-page").style.display = 'none';
