@@ -107,7 +107,13 @@ function requestChannels(idArray, channelArray)
                 appendDiv[i] = document.createElement('div');
                 appendDiv[i].id = 'sub-div';
 
-                const tempTitle = channelArray[i].getName();
+                let tempTitle = channelArray[i].getName();
+                
+                if(tempTitle.length > 20) {
+                    tempTitle = tempTitle.substring(0, 20);
+                    tempTitle += " . . .";
+                }
+                
                 const tempSub = channelArray[i].getSubscription() + newline + "Subscribers";
                 const tempVid = addCommas(channelArray[i].getVideos()) + newline + "Uploads";
                 const tempView = channelArray[i].getViews() + newline + "Total Views";
