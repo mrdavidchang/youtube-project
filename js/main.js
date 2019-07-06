@@ -44,7 +44,10 @@ function searchYoutube(paramSearch)
     })
     
     request.execute(response => {
-        if(response.result == undefined) alert("Quota Limit Reached: Please read \"contact + info\"");
+        if(response.result == undefined) {
+            alert("Quota Limit Reached!\nRedirecting to \"contact + info\" page.");
+            toggleDiv('contact-page');
+        }
         else
         {
             let playlistItems = response.result.items;
@@ -72,7 +75,10 @@ function requestChannels(idArray, channelArray)
             id: idArray.join(","),
         });
         request.execute(response => {
-            if(response.result == undefined) alert("Quota Limit Reached: Please read \"contact + info\"");
+            if(response.result == undefined) {
+                alert("Quota Limit Reached!\nRedirecting to \"contact + info\" page.");
+                toggleDiv('contact-page');
+            }
 
             let playlistItems = response.result.items;
 
@@ -267,7 +273,10 @@ function requestPlaylist(callback) {
     const request = gapi.client.youtube.playlistItems.list(requestOptions);
 
     request.execute(response => {
-        if(response.result == undefined) alert("Quota Limit Reached: Please read \"contact + info\"");
+        if(response.result == undefined) {
+            alert("Quota Limit Reached!\nRedirecting to \"contact + info\" page.");
+            toggleDiv('contact-page');
+        }
 
         globalObject.setToken(response.result.nextPageToken);
         const itemArray = response.result.items;
@@ -322,7 +331,10 @@ function requestVideos(idArray, callback)
     });                                                                                                                        
 
     dataRequestVar.execute(response => {
-        if(response.result == undefined) alert("Quota Limit Reached: Please read \"contact + info\"");
+        if(response.result == undefined) {
+            alert("Quota Limit Reached!\nRedirecting to \"contact + info\" page.");
+            toggleDiv('contact-page');
+        }
 
         const videoDetailObjects = response.result.items;
         if(videoDetailObjects) {
