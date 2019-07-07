@@ -109,8 +109,8 @@ function requestChannels(idArray, channelArray)
 
                 let tempTitle = channelArray[i].getName();
                 
-                if(tempTitle.length > 20) {
-                    tempTitle = tempTitle.substring(0, 20);
+                if(countWords(tempTitle) > 18) {
+                    tempTitle = tempTitle.substring(0, 18);
                     tempTitle += " . . .";
                 }
                 
@@ -709,4 +709,9 @@ document.getElementById("myChart").onclick = function(evt){
 function preloadVideo(link) {
     globalObject.setUrl("https://www.youtube.com/embed/" + link);
     document.getElementById('video-frame').src = globalObject.getUrl();
+}
+
+function countWords(str) {
+    var matches = str.match(/[\u00ff-\uffff]|\S+/g);
+    return matches ? matches.length : 0;
 }
