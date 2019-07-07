@@ -107,13 +107,7 @@ function requestChannels(idArray, channelArray)
                 appendDiv[i] = document.createElement('div');
                 appendDiv[i].id = 'sub-div';
 
-                let tempTitle = channelArray[i].getName();
-                
-                if(countWords(tempTitle) > 18) {
-                    tempTitle = tempTitle.substring(0, 18);
-                    tempTitle += " . . .";
-                }
-                
+                let tempTitle = channelArray[i].getName();                
                 const tempSub = channelArray[i].getSubscription() + newline + "Subscribers";
                 const tempVid = addCommas(channelArray[i].getVideos()) + newline + "Uploads";
                 const tempView = channelArray[i].getViews() + newline + "Total Views";
@@ -135,14 +129,12 @@ function requestChannels(idArray, channelArray)
                 app3.textContent = tempView;
                 app4.textContent = tempTitle;
 
-                app1.className = "sub-font1";
-                app2.className = "sub-font1";
-                app3.className = "sub-font1";
-                app4.className = "sub-font2";
+                app4.id = "truncate";
 
-                app1.id = 'hide-level-two';
-                app2.id = 'hide-level-one';
-                app3.id = 'hide-level-one';
+                app1.className = "sub-font1 hide-level-two";
+                app2.className = "sub-font1 hide-level-one";
+                app3.className = "sub-font1 hide-level-one";
+                app4.className = "sub-font2";
 
                 appendDiv[i].append(app1);
                 appendDiv[i].append(app2);
@@ -198,7 +190,7 @@ function goToChannel(channelObject)
             <br>
             <b>${channelObject.getViews()}</b> Total Views
 
-            <div id='hide-level-three'>
+            <div class='hide-level-three'>
                 <hr>
                 Description:<br/>${channelObject.getDescription()}
             </div>
