@@ -156,17 +156,22 @@ input[type=text] {
     width: 100%;
 
     text-align: center;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+
     margin: 25px auto;
-    padding: 30px;
+    padding: 40px;
     border-radius: 25px;
 
 
     display: grid;
     grid-template-columns: auto auto;
-    justify-content: space-evenly;
-    grid-gap: 20px;
+    grid-column-gap: 30px;
 
     border: 1px solid var(--border-color);
+
+    overflow: hidden;
 }
 
 h1 {
@@ -382,6 +387,11 @@ input[type=image]:disabled
     color: #999999;
 }
 
+#truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 @media screen and (max-width: 1500px) {
     .info-container {
@@ -418,8 +428,8 @@ input[type=image]:disabled
 
 @media screen and (max-width: 900px) {
     #main-image {
-        max-width: 150px;
-        max-height: 150px;
+        max-width: 100px;
+        max-height: 100px;
     }
 
     #sub-div {
@@ -441,11 +451,11 @@ input[type=image]:disabled
         top: 0px;
     }
 
-    #hide-level-one {
+    .hide-level-one {
         display: none;
     }
 
-    #hide-level-three {
+    .hide-level-three {
         display: none;
     }
 
@@ -508,7 +518,7 @@ input[type=image]:disabled
         grid-template-columns: auto;
     }
 
-    #hide-level-two {
+    .hide-level-two {
         display: none;
     }
 
