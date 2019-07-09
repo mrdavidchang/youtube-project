@@ -161,13 +161,13 @@ input[type=text] {
     justify-self: center;
 
     margin: 25px auto;
-    padding: 40px;
+    padding: 30px;
     border-radius: 25px;
 
 
     display: grid;
     grid-template-columns: auto auto;
-    grid-column-gap: 30px;
+    grid-column-gap: 25px;
 
     border: 1px solid var(--border-color);
 
@@ -455,10 +455,6 @@ input[type=image]:disabled
         display: none;
     }
 
-    .hide-level-three {
-        display: none;
-    }
-
     #leftButton {
         height: 70px;
         width: 70px;
@@ -514,6 +510,14 @@ input[type=image]:disabled
 }
 
 @media screen and (max-width: 660px) {
+    .hide-level-three {
+        display: none;
+    }
+
+    .info-container {
+        padding: 50px;
+    }
+
     #sub-div {
         grid-template-columns: auto;
     }
