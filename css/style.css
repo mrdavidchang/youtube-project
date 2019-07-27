@@ -317,7 +317,7 @@ input[type=image]:disabled
     margin-right: auto;
 
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: 40% 20% 20% 20%;
     align-items: center;
 
     border: 1px solid #AAAAAA;
@@ -433,7 +433,7 @@ input[type=image]:disabled
     }
 
     #sub-div {
-        grid-template-columns: auto auto;
+        grid-template-columns: 60% 40%;
     }
 
     #middleSection {
